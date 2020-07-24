@@ -1,0 +1,36 @@
+shader lsLayerColor (
+
+color baseLayer = color(0),
+color layer1 = color(0),
+float layer1Mix = 0, 
+color layer2 = color(0),
+float layer2Mix = 0, 
+color layer3 = color(0),
+float layer3Mix = 0, 
+color layer4 = color(0),
+float layer4Mix = 0, 
+color layer5 = color(0),
+float layer5Mix = 0, 
+color layer6 = color(0),
+float layer6Mix = 0, 
+color layer7 = color(0),
+float layer7Mix = 0, 
+color layer8 = color(0),
+float layer8Mix = 0, 
+
+output color resultRGB = 0
+
+)
+
+{
+
+resultRGB = mix(baseLayer, layer1, layer1Mix);
+resultRGB = mix(resultRGB, layer2, layer2Mix);
+resultRGB = mix(resultRGB, layer3, layer3Mix);
+resultRGB = mix(resultRGB, layer4, layer4Mix);
+resultRGB = mix(resultRGB, layer5, layer5Mix);
+resultRGB = mix(resultRGB, layer6, layer6Mix);
+resultRGB = mix(resultRGB, layer7, layer7Mix);
+resultRGB = mix(resultRGB, layer8, layer8Mix);
+
+}

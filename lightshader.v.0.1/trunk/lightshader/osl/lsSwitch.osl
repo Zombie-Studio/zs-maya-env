@@ -1,0 +1,36 @@
+shader lsSwitch (
+
+int index = 0,
+color layer1 = color(0),
+color layer2 = color(0),
+color layer3 = color(0),
+color layer4 = color(0),
+color layer5 = color(0),
+color layer6 = color(0),
+color layer7 = color(0),
+color layer8 = color(0),
+output color resultRGB = 0
+
+)
+
+{
+
+if (index == 0)
+    resultRGB = layer1;
+else if (index == 1)
+    resultRGB = layer2;
+else if (index == 2)
+    resultRGB = layer3;
+else if (index == 3)
+    resultRGB = layer4;
+else if (index == 4)
+    resultRGB = layer5;
+else if (index == 5)
+    resultRGB = layer6;
+else if (index == 6)
+    resultRGB = layer7;
+else if (index == 7)
+    resultRGB = layer8;
+else
+    resultRGB = color(0);
+}

@@ -1,0 +1,27 @@
+shader lsRemap(
+
+    float input = 0,
+    float mask = 1 [[string help = "Connect a map to mask out influence region.", float min = 0, float max = 1 ]],
+    float inputMin = 0,
+    float inputMax = 1,
+    float outputMin = 0,
+    float outputMax = 1,
+    int clamp = 0 [[string widget = "boolean" ]],
+    float clampMin = 0,
+    float clampMax = 1,
+
+    output float resultF = 0
+
+)
+
+{
+    
+    resultF = (input-inputMin)/(inputMax-inputMin);
+    resultF = mix(outputMin, outputMax, resultF);
+    if (clamp) {
+        resultF = min(clampMax, resultF);
+        resultF = max(clampMin, resultF);
+    }
+    resultF = mix(input, resultF, mask);
+
+}

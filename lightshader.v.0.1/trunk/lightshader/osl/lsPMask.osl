@@ -1,0 +1,66 @@
+//#define PWorld 0
+//#define PRef 1
+//
+//
+//shader lsPMask(
+//    int space = 0 [[ string widget = "popup", string options = "PWorld|PRef" ]],
+//    point translation = point(0.0, 0.0, 0.0),
+//    point rotation = point(0, 0, 0),
+//    point scale = point(1.0, 1.0, 1.0),
+//    float whitepoint = 1.0 [[ float min = 0, float max = 1 ]],
+//    float blackpoint = 0.0 [[ float min = 0, float max = 1 ]],
+//    float gamma = 1.0,
+//
+//    // Output
+//    output color mask = color(0, 0, 0)
+//)
+//
+//{
+//    point outputPosition = transform("world", P);
+//    point positionResult = 0;
+//    point rotationResult = 0;
+//    float inverse = 0;
+//
+//    // Setting the mapping to either world or object space
+//    if (space == PRef)
+//  		outputPosition = transform("object", P);
+//
+//    // Calculating new position
+//    positionResult = (outputPosition - translation) / (scale + 0.001);
+//
+//    // Rotating new position ( not working)
+//    float f_rotateAngle = radians((-rotation[0]) * 360.0);  // convert to radians
+//    rotationResult = rotate(positionResult, f_rotateAngle, point(0.0, 0.0, 0.0), point(0.0, 0.0, 1.0));
+//
+//
+//    // Color correct
+//    float lengthResult = length(rotationResult);
+//    float mult = 1 / whitepoint;
+//   	float invMult = pow(1 / sqrt(1 - blackpoint), 2);
+//
+//    // Output
+//    float out = pow(clamp(mult * (1 - (invMult * lengthResult)), 0, 1), 1 / gamma);
+//    mask = color(out, out, out);
+//}
+
+float udRoundBox( point p, vector b, float r )
+{
+  return length(max(abs(p) - b, 0.0))-r;
+}
+
+shader lsPMask
+(
+    color Cin = color(0, 0, 0),
+    color Cin2 = color(1, 1, 1),
+    matrix t = matrix(1),
+    float rounded = 0.1,
+    float smooth = 0.1,
+    output color Cout = color(0, 0, 0)
+)
+
+{
+    point oP  = transform(1/t, P);
+    float d = udRoundBox( oP, vector(1,1,1), rounded);
+    float a = clamp(d / smooth, 0.000001, 1);
+    Cout = mix(Cin, Cin2, a) ;
+}

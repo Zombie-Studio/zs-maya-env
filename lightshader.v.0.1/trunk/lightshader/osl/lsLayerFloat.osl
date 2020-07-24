@@ -1,0 +1,36 @@
+shader lsLayerFloat (
+
+float baseLayer = float(0),
+float layer1 = float(0),
+float layer1Mix = 0, 
+float layer2 = float(0),
+float layer2Mix = 0, 
+float layer3 = float(0),
+float layer3Mix = 0, 
+float layer4 = float(0),
+float layer4Mix = 0, 
+float layer5 = float(0),
+float layer5Mix = 0, 
+float layer6 = float(0),
+float layer6Mix = 0, 
+float layer7 = float(0),
+float layer7Mix = 0, 
+float layer8 = float(0),
+float layer8Mix = 0, 
+
+output float result = 0
+
+)
+
+{
+
+result = mix(baseLayer, layer1, layer1Mix);
+result = mix(result, layer2, layer2Mix);
+result = mix(result, layer3, layer3Mix);
+result = mix(result, layer4, layer4Mix);
+result = mix(result, layer5, layer5Mix);
+result = mix(result, layer6, layer6Mix);
+result = mix(result, layer7, layer7Mix);
+result = mix(result, layer8, layer8Mix);
+
+}

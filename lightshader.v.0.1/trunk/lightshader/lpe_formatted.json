@@ -1,0 +1,528 @@
+{
+	"arnold": {
+		"aovs": [{
+				"aiAOV_background": {
+					"aiAOV_background.binMembership": "",
+					"aiAOV_background.caching": false,
+					"aiAOV_background.camera": "",
+					"aiAOV_background.defaultValue": "",
+					"aiAOV_background.enabled": true,
+					"aiAOV_background.filterType": "",
+					"aiAOV_background.frozen": false,
+					"aiAOV_background.globalAov": true,
+					"aiAOV_background.imageFormat": "",
+					"aiAOV_background.isHistoricallyInteresting": 2,
+					"aiAOV_background.lightGroups": false,
+					"aiAOV_background.lightGroupsList": "",
+					"aiAOV_background.lightPathExpression": "C<TS>*[L]",
+					"aiAOV_background.message": null,
+					"aiAOV_background.name": "background",
+					"aiAOV_background.nodeState": 0,
+					"aiAOV_background.prefix": "",
+					"aiAOV_background.type": 6
+				}
+			}, {
+				"aiAOV_beauty": {
+					"aiAOV_beauty.binMembership": "",
+					"aiAOV_beauty.caching": false,
+					"aiAOV_beauty.camera": "",
+					"aiAOV_beauty.defaultValue": "",
+					"aiAOV_beauty.enabled": true,
+					"aiAOV_beauty.filterType": "",
+					"aiAOV_beauty.frozen": false,
+					"aiAOV_beauty.globalAov": true,
+					"aiAOV_beauty.imageFormat": "",
+					"aiAOV_beauty.isHistoricallyInteresting": 2,
+					"aiAOV_beauty.lightGroups": false,
+					"aiAOV_beauty.lightGroupsList": "",
+					"aiAOV_beauty.lightPathExpression": "C.*",
+					"aiAOV_beauty.message": null,
+					"aiAOV_beauty.name": "beauty",
+					"aiAOV_beauty.nodeState": 0,
+					"aiAOV_beauty.prefix": "",
+					"aiAOV_beauty.type": 6
+				}
+			}, {
+				"aiAOV_coat": {
+					"aiAOV_coat.binMembership": "",
+					"aiAOV_coat.caching": false,
+					"aiAOV_coat.camera": "",
+					"aiAOV_coat.defaultValue": "",
+					"aiAOV_coat.enabled": true,
+					"aiAOV_coat.filterType": "",
+					"aiAOV_coat.frozen": false,
+					"aiAOV_coat.globalAov": true,
+					"aiAOV_coat.imageFormat": "",
+					"aiAOV_coat.isHistoricallyInteresting": 2,
+					"aiAOV_coat.lightGroups": false,
+					"aiAOV_coat.lightGroupsList": "",
+					"aiAOV_coat.lightPathExpression": "C<TS>*<RS'coat'><L.>|<O.>",
+					"aiAOV_coat.message": null,
+					"aiAOV_coat.name": "coat",
+					"aiAOV_coat.nodeState": 0,
+					"aiAOV_coat.prefix": "",
+					"aiAOV_coat.type": 6
+				}
+			}, {
+				"aiAOV_coat_indirect": {
+					"aiAOV_coat_indirect.binMembership": "",
+					"aiAOV_coat_indirect.caching": false,
+					"aiAOV_coat_indirect.camera": "",
+					"aiAOV_coat_indirect.defaultValue": "",
+					"aiAOV_coat_indirect.enabled": true,
+					"aiAOV_coat_indirect.filterType": "",
+					"aiAOV_coat_indirect.frozen": false,
+					"aiAOV_coat_indirect.globalAov": true,
+					"aiAOV_coat_indirect.imageFormat": "",
+					"aiAOV_coat_indirect.isHistoricallyInteresting": 2,
+					"aiAOV_coat_indirect.lightGroups": false,
+					"aiAOV_coat_indirect.lightGroupsList": "",
+					"aiAOV_coat_indirect.lightPathExpression": "C<TS>*<RS'coat'>[DSV]+<L.>|<O.>",
+					"aiAOV_coat_indirect.message": null,
+					"aiAOV_coat_indirect.name": "coat_indirect",
+					"aiAOV_coat_indirect.nodeState": 0,
+					"aiAOV_coat_indirect.prefix": "",
+					"aiAOV_coat_indirect.type": 6
+				}
+			}, {
+				"aiAOV_coat_raw": {
+					"aiAOV_coat_raw.binMembership": "",
+					"aiAOV_coat_raw.caching": false,
+					"aiAOV_coat_raw.camera": "",
+					"aiAOV_coat_raw.defaultValue": "",
+					"aiAOV_coat_raw.enabled": true,
+					"aiAOV_coat_raw.filterType": "",
+					"aiAOV_coat_raw.frozen": false,
+					"aiAOV_coat_raw.globalAov": true,
+					"aiAOV_coat_raw.imageFormat": "",
+					"aiAOV_coat_raw.isHistoricallyInteresting": 2,
+					"aiAOV_coat_raw.lightGroups": false,
+					"aiAOV_coat_raw.lightGroupsList": "",
+					"aiAOV_coat_raw.lightPathExpression": "C<TS>*<RS'coat'>A",
+					"aiAOV_coat_raw.message": null,
+					"aiAOV_coat_raw.name": "coat_raw",
+					"aiAOV_coat_raw.nodeState": 0,
+					"aiAOV_coat_raw.prefix": "",
+					"aiAOV_coat_raw.type": 6
+				}
+			}, {
+				"aiAOV_diffuse": {
+					"aiAOV_diffuse.binMembership": "",
+					"aiAOV_diffuse.caching": false,
+					"aiAOV_diffuse.camera": "",
+					"aiAOV_diffuse.defaultValue": "",
+					"aiAOV_diffuse.enabled": true,
+					"aiAOV_diffuse.filterType": "",
+					"aiAOV_diffuse.frozen": false,
+					"aiAOV_diffuse.globalAov": true,
+					"aiAOV_diffuse.imageFormat": "",
+					"aiAOV_diffuse.isHistoricallyInteresting": 2,
+					"aiAOV_diffuse.lightGroups": false,
+					"aiAOV_diffuse.lightGroupsList": "",
+					"aiAOV_diffuse.lightPathExpression": "C<TS>*<RD><L.>|<O.>",
+					"aiAOV_diffuse.message": null,
+					"aiAOV_diffuse.name": "diffuse",
+					"aiAOV_diffuse.nodeState": 0,
+					"aiAOV_diffuse.prefix": "",
+					"aiAOV_diffuse.type": 6
+				}
+			}, {
+				"aiAOV_diffuse_indirect": {
+					"aiAOV_diffuse_indirect.binMembership": "",
+					"aiAOV_diffuse_indirect.caching": false,
+					"aiAOV_diffuse_indirect.camera": "",
+					"aiAOV_diffuse_indirect.defaultValue": "",
+					"aiAOV_diffuse_indirect.enabled": true,
+					"aiAOV_diffuse_indirect.filterType": "",
+					"aiAOV_diffuse_indirect.frozen": false,
+					"aiAOV_diffuse_indirect.globalAov": true,
+					"aiAOV_diffuse_indirect.imageFormat": "",
+					"aiAOV_diffuse_indirect.isHistoricallyInteresting": 2,
+					"aiAOV_diffuse_indirect.lightGroups": false,
+					"aiAOV_diffuse_indirect.lightGroupsList": "",
+					"aiAOV_diffuse_indirect.lightPathExpression": "C<TS>*<RD>[DSV]+<L.>|<O.>",
+					"aiAOV_diffuse_indirect.message": null,
+					"aiAOV_diffuse_indirect.name": "diffuse_indirect",
+					"aiAOV_diffuse_indirect.nodeState": 0,
+					"aiAOV_diffuse_indirect.prefix": "",
+					"aiAOV_diffuse_indirect.type": 6
+				}
+			}, {
+				"aiAOV_diffuse_raw": {
+					"aiAOV_diffuse_raw.binMembership": "",
+					"aiAOV_diffuse_raw.caching": false,
+					"aiAOV_diffuse_raw.camera": "",
+					"aiAOV_diffuse_raw.defaultValue": "",
+					"aiAOV_diffuse_raw.enabled": true,
+					"aiAOV_diffuse_raw.filterType": "",
+					"aiAOV_diffuse_raw.frozen": false,
+					"aiAOV_diffuse_raw.globalAov": true,
+					"aiAOV_diffuse_raw.imageFormat": "",
+					"aiAOV_diffuse_raw.isHistoricallyInteresting": 2,
+					"aiAOV_diffuse_raw.lightGroups": false,
+					"aiAOV_diffuse_raw.lightGroupsList": "",
+					"aiAOV_diffuse_raw.lightPathExpression": "C<TS>*<RD>A",
+					"aiAOV_diffuse_raw.message": null,
+					"aiAOV_diffuse_raw.name": "diffuse_raw",
+					"aiAOV_diffuse_raw.nodeState": 0,
+					"aiAOV_diffuse_raw.prefix": "",
+					"aiAOV_diffuse_raw.type": 6
+				}
+			}, {
+				"aiAOV_volumescattering": {
+					"aiAOV_volumescattering.binMembership": "",
+					"aiAOV_volumescattering.caching": false,
+					"aiAOV_volumescattering.camera": "",
+					"aiAOV_volumescattering.defaultValue": "",
+					"aiAOV_volumescattering.enabled": true,
+					"aiAOV_volumescattering.filterType": "",
+					"aiAOV_volumescattering.frozen": false,
+					"aiAOV_volumescattering.globalAov": true,
+					"aiAOV_volumescattering.imageFormat": "",
+					"aiAOV_volumescattering.isHistoricallyInteresting": 2,
+					"aiAOV_volumescattering.lightGroups": false,
+					"aiAOV_volumescattering.lightGroupsList": "",
+					"aiAOV_volumescattering.lightPathExpression": "C<TS>*[^L]",
+					"aiAOV_volumescattering.message": null,
+					"aiAOV_volumescattering.name": "emission",
+					"aiAOV_volumescattering.nodeState": 0,
+					"aiAOV_volumescattering.prefix": "",
+					"aiAOV_volumescattering.type": 6
+				}
+			}, {
+				"aiAOV_scatter": {
+					"aiAOV_scatter.binMembership": "",
+					"aiAOV_scatter.caching": false,
+					"aiAOV_scatter.camera": "",
+					"aiAOV_scatter.defaultValue": "",
+					"aiAOV_scatter.enabled": true,
+					"aiAOV_scatter.filterType": "",
+					"aiAOV_scatter.frozen": false,
+					"aiAOV_scatter.globalAov": true,
+					"aiAOV_scatter.imageFormat": "",
+					"aiAOV_scatter.isHistoricallyInteresting": 2,
+					"aiAOV_scatter.lightGroups": false,
+					"aiAOV_scatter.lightGroupsList": "",
+					"aiAOV_scatter.lightPathExpression": "C<TS>*<TD><L.>",
+					"aiAOV_scatter.message": null,
+					"aiAOV_scatter.name": "scatter",
+					"aiAOV_scatter.nodeState": 0,
+					"aiAOV_scatter.prefix": "",
+					"aiAOV_scatter.type": 6
+				}
+			}, {
+				"aiAOV_scatter_indirect": {
+					"aiAOV_scatter_indirect.binMembership": "",
+					"aiAOV_scatter_indirect.caching": false,
+					"aiAOV_scatter_indirect.camera": "",
+					"aiAOV_scatter_indirect.defaultValue": "",
+					"aiAOV_scatter_indirect.enabled": true,
+					"aiAOV_scatter_indirect.filterType": "",
+					"aiAOV_scatter_indirect.frozen": false,
+					"aiAOV_scatter_indirect.globalAov": true,
+					"aiAOV_scatter_indirect.imageFormat": "",
+					"aiAOV_scatter_indirect.isHistoricallyInteresting": 2,
+					"aiAOV_scatter_indirect.lightGroups": false,
+					"aiAOV_scatter_indirect.lightGroupsList": "",
+					"aiAOV_scatter_indirect.lightPathExpression": "C<TS>*<TD>[DSVOB].*",
+					"aiAOV_scatter_indirect.message": null,
+					"aiAOV_scatter_indirect.name": "scatter_indirect",
+					"aiAOV_scatter_indirect.nodeState": 0,
+					"aiAOV_scatter_indirect.prefix": "",
+					"aiAOV_scatter_indirect.type": 6
+				}
+			}, {
+				"aiAOV_scatter_raw": {
+					"aiAOV_scatter_raw.binMembership": "",
+					"aiAOV_scatter_raw.caching": false,
+					"aiAOV_scatter_raw.camera": "",
+					"aiAOV_scatter_raw.defaultValue": "",
+					"aiAOV_scatter_raw.enabled": true,
+					"aiAOV_scatter_raw.filterType": "",
+					"aiAOV_scatter_raw.frozen": false,
+					"aiAOV_scatter_raw.globalAov": true,
+					"aiAOV_scatter_raw.imageFormat": "",
+					"aiAOV_scatter_raw.isHistoricallyInteresting": 2,
+					"aiAOV_scatter_raw.lightGroups": false,
+					"aiAOV_scatter_raw.lightGroupsList": "",
+					"aiAOV_scatter_raw.lightPathExpression": "C<TS>*<TD>A",
+					"aiAOV_scatter_raw.message": null,
+					"aiAOV_scatter_raw.name": "scatter_raw",
+					"aiAOV_scatter_raw.nodeState": 0,
+					"aiAOV_scatter_raw.prefix": "",
+					"aiAOV_scatter_raw.type": 6
+				}
+			}, {
+				"aiAOV_specular": {
+					"aiAOV_specular.binMembership": "",
+					"aiAOV_specular.caching": false,
+					"aiAOV_specular.camera": "",
+					"aiAOV_specular.defaultValue": "",
+					"aiAOV_specular.enabled": true,
+					"aiAOV_specular.filterType": "",
+					"aiAOV_specular.frozen": false,
+					"aiAOV_specular.globalAov": true,
+					"aiAOV_specular.imageFormat": "",
+					"aiAOV_specular.isHistoricallyInteresting": 2,
+					"aiAOV_specular.lightGroups": false,
+					"aiAOV_specular.lightGroupsList": "",
+					"aiAOV_specular.lightPathExpression": "C<TS>*<RS[^'coat']><L.>|<O.>",
+					"aiAOV_specular.message": null,
+					"aiAOV_specular.name": "specular",
+					"aiAOV_specular.nodeState": 0,
+					"aiAOV_specular.prefix": "",
+					"aiAOV_specular.type": 6
+				}
+			}, {
+				"aiAOV_specular_indirect": {
+					"aiAOV_specular_indirect.binMembership": "",
+					"aiAOV_specular_indirect.caching": false,
+					"aiAOV_specular_indirect.camera": "",
+					"aiAOV_specular_indirect.defaultValue": "",
+					"aiAOV_specular_indirect.enabled": true,
+					"aiAOV_specular_indirect.filterType": "",
+					"aiAOV_specular_indirect.frozen": false,
+					"aiAOV_specular_indirect.globalAov": true,
+					"aiAOV_specular_indirect.imageFormat": "",
+					"aiAOV_specular_indirect.isHistoricallyInteresting": 2,
+					"aiAOV_specular_indirect.lightGroups": false,
+					"aiAOV_specular_indirect.lightGroupsList": "",
+					"aiAOV_specular_indirect.lightPathExpression": "C<TS>*<RS[^'coat']>[DSV]+<L.>|<O.>",
+					"aiAOV_specular_indirect.message": null,
+					"aiAOV_specular_indirect.name": "specular_indirect",
+					"aiAOV_specular_indirect.nodeState": 0,
+					"aiAOV_specular_indirect.prefix": "",
+					"aiAOV_specular_indirect.type": 6
+				}
+			}, {
+				"aiAOV_specular_raw": {
+					"aiAOV_specular_raw.binMembership": "",
+					"aiAOV_specular_raw.caching": false,
+					"aiAOV_specular_raw.camera": "",
+					"aiAOV_specular_raw.defaultValue": "",
+					"aiAOV_specular_raw.enabled": true,
+					"aiAOV_specular_raw.filterType": "",
+					"aiAOV_specular_raw.frozen": false,
+					"aiAOV_specular_raw.globalAov": true,
+					"aiAOV_specular_raw.imageFormat": "",
+					"aiAOV_specular_raw.isHistoricallyInteresting": 2,
+					"aiAOV_specular_raw.lightGroups": false,
+					"aiAOV_specular_raw.lightGroupsList": "",
+					"aiAOV_specular_raw.lightPathExpression": "C<TS>*<RS[^'coat']>A",
+					"aiAOV_specular_raw.message": null,
+					"aiAOV_specular_raw.name": "specular_raw",
+					"aiAOV_specular_raw.nodeState": 0,
+					"aiAOV_specular_raw.prefix": "",
+					"aiAOV_specular_raw.type": 6
+				}
+			}, {
+				"aiAOV_volume": {
+					"aiAOV_volume.binMembership": "",
+					"aiAOV_volume.caching": false,
+					"aiAOV_volume.camera": "",
+					"aiAOV_volume.defaultValue": "",
+					"aiAOV_volume.enabled": true,
+					"aiAOV_volume.filterType": "",
+					"aiAOV_volume.frozen": false,
+					"aiAOV_volume.globalAov": true,
+					"aiAOV_volume.imageFormat": "",
+					"aiAOV_volume.isHistoricallyInteresting": 2,
+					"aiAOV_volume.lightGroups": false,
+					"aiAOV_volume.lightGroupsList": "",
+					"aiAOV_volume.lightPathExpression": "C<TS>*<RV><L.>",
+					"aiAOV_volume.message": null,
+					"aiAOV_volume.name": "volume",
+					"aiAOV_volume.nodeState": 0,
+					"aiAOV_volume.prefix": "",
+					"aiAOV_volume.type": 6
+				}
+			}, {
+				"aiAOV_volume_indirect": {
+					"aiAOV_volume_indirect.binMembership": "",
+					"aiAOV_volume_indirect.caching": false,
+					"aiAOV_volume_indirect.camera": "",
+					"aiAOV_volume_indirect.defaultValue": "",
+					"aiAOV_volume_indirect.enabled": true,
+					"aiAOV_volume_indirect.filterType": "",
+					"aiAOV_volume_indirect.frozen": false,
+					"aiAOV_volume_indirect.globalAov": true,
+					"aiAOV_volume_indirect.imageFormat": "",
+					"aiAOV_volume_indirect.isHistoricallyInteresting": 2,
+					"aiAOV_volume_indirect.lightGroups": false,
+					"aiAOV_volume_indirect.lightGroupsList": "",
+					"aiAOV_volume_indirect.lightPathExpression": "C<TS>*<RV>[DSVOB].*",
+					"aiAOV_volume_indirect.message": null,
+					"aiAOV_volume_indirect.name": "volume_indirect",
+					"aiAOV_volume_indirect.nodeState": 0,
+					"aiAOV_volume_indirect.prefix": "",
+					"aiAOV_volume_indirect.type": 6
+				}
+			}
+		],
+		"drivers": [{
+				"defaultArnoldDriver": {
+					"defaultArnoldDriver.aiTranslator": "exr",
+					"defaultArnoldDriver.aiUserOptions": "",
+					"defaultArnoldDriver.alphaHalfPrecision": false,
+					"defaultArnoldDriver.alphaTolerance": 0.009999999776482582,
+					"defaultArnoldDriver.append": false,
+					"defaultArnoldDriver.autocrop": false,
+					"defaultArnoldDriver.binMembership": "",
+					"defaultArnoldDriver.caching": false,
+					"defaultArnoldDriver.colorManagement": 2,
+					"defaultArnoldDriver.depthHalfPrecision": false,
+					"defaultArnoldDriver.depthTolerance": 0.009999999776482582,
+					"defaultArnoldDriver.dither": true,
+					"defaultArnoldDriver.exrCompression": 3,
+					"defaultArnoldDriver.filename": "dummy.json",
+					"defaultArnoldDriver.frozen": false,
+					"defaultArnoldDriver.halfPrecision": false,
+					"defaultArnoldDriver.isHistoricallyInteresting": 2,
+					"defaultArnoldDriver.mergeAOVs": true,
+					"defaultArnoldDriver.message": null,
+					"defaultArnoldDriver.nodeState": 0,
+					"defaultArnoldDriver.outputMode": 2,
+					"defaultArnoldDriver.outputPadded": false,
+					"defaultArnoldDriver.pngFormat": 0,
+					"defaultArnoldDriver.prefix": "",
+					"defaultArnoldDriver.preserveLayerName": false,
+					"defaultArnoldDriver.quality": 100,
+					"defaultArnoldDriver.skipAlpha": false,
+					"defaultArnoldDriver.subpixelMerge": true,
+					"defaultArnoldDriver.tiffCompression": 1,
+					"defaultArnoldDriver.tiffFormat": 0,
+					"defaultArnoldDriver.tiled": false,
+					"defaultArnoldDriver.unpremultAlpha": false,
+					"defaultArnoldDriver.useRGBOpacity": false
+				}
+			}
+		],
+		"filters": [{
+				"defaultArnoldFilter": {
+					"defaultArnoldFilter.aiTranslator": "gaussian",
+					"defaultArnoldFilter.aiUserOptions": "",
+					"defaultArnoldFilter.binMembership": "",
+					"defaultArnoldFilter.caching": false,
+					"defaultArnoldFilter.domain": 0,
+					"defaultArnoldFilter.filterFilter": 0,
+					"defaultArnoldFilter.filterMode": 0,
+					"defaultArnoldFilter.filterRank": 0,
+					"defaultArnoldFilter.filterWeights": 1,
+					"defaultArnoldFilter.filterWidth": 2.0,
+					"defaultArnoldFilter.frozen": false,
+					"defaultArnoldFilter.isHistoricallyInteresting": 2,
+					"defaultArnoldFilter.maximum": 1.0,
+					"defaultArnoldFilter.message": null,
+					"defaultArnoldFilter.minimum": 0.0,
+					"defaultArnoldFilter.nodeState": 0,
+					"defaultArnoldFilter.scalarMode": false,
+					"defaultArnoldFilter.width": 2.0
+				}
+			}
+		],
+		"outputs": [{
+				"aiAOV_background": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_beauty": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_coat": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_coat_indirect": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_coat_raw": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_diffuse": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_diffuse_indirect": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_diffuse_raw": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_volumescattering": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_scatter": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_scatter_indirect": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_scatter_raw": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_specular": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_specular_indirect": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_specular_raw": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_volume": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}, {
+				"aiAOV_volume_indirect": [{
+						"driver": "defaultArnoldDriver",
+						"filter": "defaultArnoldFilter"
+					}
+				]
+			}
+		]
+	}
+}
