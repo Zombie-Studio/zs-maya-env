@@ -174,7 +174,7 @@ global proc shelf_ZOMBIE_LOOKVDEV () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "file -r -type \"mayaAscii\" -gr  -ignoreVersion -mergeNamespacesOnClash true -namespace \":\" -options \"v=0;\" \"X:/INHOUSE/MayaScripts/2018/light_setup.ma\";" 
+        -command "file -r -type \"mayaAscii\" -gr  -ignoreVersion -mergeNamespacesOnClash true -namespace \":\" -options \"v=0;\" \"R:\\Zombie Dropbox\\Zombie Studio (freelance)\\INHOUSE\\HDRI\\light_setup_aces.ma\";" 
         -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
