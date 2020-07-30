@@ -3,6 +3,7 @@ global proc shelf_ZOMBIE_TOOLS () {
     global string $gBuffStr0;
     global string $gBuffStr1;
 
+	
 	shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 2
