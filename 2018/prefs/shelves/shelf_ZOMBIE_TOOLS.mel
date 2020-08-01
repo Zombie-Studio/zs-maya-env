@@ -5,9 +5,6 @@ global proc shelf_ZOMBIE_TOOLS () {
 	
 	
 	shelfButton
-        -enableCommandRepeat 1
-        -flexibleWidthType 2
-        -flexibleWidthValue 32
         -enable 1
         -width 32
         -height 32
@@ -28,8 +25,8 @@ global proc shelf_ZOMBIE_TOOLS () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "snapshot.svg" 
-        -image1 "snapshot.svg" 
+        -image "snapshot.png" 
+        -image1 "snapshot.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
