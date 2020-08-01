@@ -1,0 +1,599 @@
+global proc shelf_ZOMBIE_ASSEMBLY () {
+    global string $gBuffStr;
+    global string $gBuffStr0;
+    global string $gBuffStr1;
+
+
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "## autoRig Prop Zombie\n\nmodel = cmds.ls( sl = True )\n\nif model =..." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "## autoRig Prop Zombie\n\nmodel = cmds.ls( sl = True )\n\nif model =..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "zPropRig" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "## autoRig Prop Zombie\n\nmodel = cmds.ls( sl = True )\n\nif model == []:\n    cmds.warning( \"Seleciona um objeto para criar o rig\" )\n   \nelse:\n    # criando grupos\n    allGrp = cmds.group( em = True, name = \"All_grp\" )\n    meshGrp = cmds.group( em = True, name = \"MESH\" )\n    ctrlGrp = cmds.group( em = True, name = \"CTRL\" )\n    dataGrp = cmds.group( em = True, name = \"DATA\" )\n    \n    # organizando a hierarquia dos grupos\n    childGroup = meshGrp,ctrlGrp,dataGrp\n    cmds.parent( childGroup, allGrp )\n    \n    # criando controles\n    \n    masterCtrl = cmds.circle( name = \"master_ctrl\", c = [0,0,0], sw = 360, d = 3, r = 80, nr = [0,1,0], ch = False)\n    globalCtrl = cmds.circle( name = \"global_ctrl\", c = [0,0,0], sw = 360, d = 3, r = 100, nr = [0,1,0], ch = False)\n    \n    # organizando a hierarquia das curvas\n    \n    cmds.parent( masterCtrl, globalCtrl )\n    cmds.parent( globalCtrl, ctrlGrp )\n    \n    # setando model no rig\n    \n    cmds.parent( model, meshGrp )\n\n    # setando cores\n    \n    cmds.setAttr(str(masterCtrl[0]) + \".overrideEnabled\", 1)\n    cmds.setAttr(str(masterCtrl[0]) + \".overrideColor\", 13)\n    cmds.setAttr(str(globalCtrl[0]) + \".overrideEnabled\", 1)\n    cmds.setAttr(str(globalCtrl[0]) + \".overrideColor\", 17)\n    \n    # setando layers\n    cmds.select( \"MESH\" )\n    geoLr = cmds.createDisplayLayer( noRecurse=True, name='GEO_lr' )\n    cmds.select( clear = True )\n    cmds.select( \"CTRL\" )\n    ctrlLr = cmds.createDisplayLayer( noRecurse=True, name='CTRL_lr' )" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "from maya import cmds\n\n\nsel = cmds.ls(sl = True)\nnumber = 0\njoin..." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "from maya import cmds\n\n\nsel = cmds.ls(sl = True)\nnumber = 0\njoin..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "zControl" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from maya import cmds\n\n\nsel = cmds.ls(sl = True)\nnumber = 0\njoints = []\ncontrols = []\ncontrolador = input(\"digite o nome do controlador:\") \nfor i in sel:\n    \n    pos = cmds.xform( i, q = 1, t = True)\n    cmds.select( clear = True )\n    jnt = cmds.joint( name = controlador + \"_%d_jnt\"  % number)\n    cmds.xform(jnt, t = pos)\n    ctrlGrp = cmds.group( em = True, name = controlador + \"_%d_grp\"  % number)\n    ctrls = cmds.circle( name = controlador + \"_%d_ctrl\" % number, c = [0,0,0], sw = 360, d = 3, r = 5, nr = [0,0,1], ch = False)\n    cmds.parent( ctrls, ctrlGrp )\n    cmds.xform(ctrlGrp, t = pos)\n    cmds.parentConstraint( ctrls, jnt )\n    cmds.scaleConstraint( ctrls, jnt )\n    number = number + 1\n    joints.append(jnt)\n    controls.append(ctrlGrp)\n\njointGrp =  cmds.group( em = True, name = controlador + \"_jnt_grp\" )\ncmds.parent( joints, jointGrp )\ncmds.parent( jointGrp, \"DATA\" )\ncmds.parent( controls, \"master_ctrl\" )" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "sel = cmds.ls(sl = True)\nnumber = 0\njoints = []\ncontrols = []\ncontrolador = input(\"digite o nome do controlador:\") \nfor i in sel:\n    \n    pos = cmds.xform( i, q = 1, t = True)\n    cmds.select( clear = True )\n    ctrlGrp = cmds.group( em = True, name = controlador + \"_%d_grp\"  % number)\n    ctrls = cmds.circle( name = controlador + \"_%d_ctrl\" % number, c = [0,0,0], sw = 360, d = 3, r = 5, nr = [0,0,1], ch = False)\n    cmds.parent( ctrls, ctrlGrp )\n    cmds.xform(ctrlGrp, t = pos)\n    cmds.parentConstraint( ctrls, i )\n    cmds.scaleConstraint( ctrls, i )\n    number = number + 1\n    controls.append(ctrlGrp)\ncmds.parent( controls, \"master_ctrl\" )" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "sel = cmds.ls(sl = True)\nnumber = 0\njoints = []\ncontrols = []\nco..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "zControl" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from maya import cmds\n\n\nsel = cmds.ls(sl = True)\nnumber = 0\njoints = []\ncontrols = []\ncontrolador = input(\"digite o nome do controlador:\") \nfor i in sel:\n    \n    pos = cmds.xform( i, q = 1, t = True, ws = True)\n    cmds.select( clear = True )\n    ctrlGrp = cmds.group( em = True, name = controlador + \"_%d_grp\"  % number)\n    ctrls = cmds.circle( name = controlador + \"_%d_ctrl\" % number, c = [0,0,0], sw = 360, d = 3, r = 5, nr = [0,0,1], ch = False)\n    cmds.parent( ctrls, ctrlGrp )\n    cmds.matchTransform( ctrlGrp, i  )\n    #cmds.xform(ctrlGrp, t = pos)\n    cmds.parentConstraint( ctrls, i )\n    cmds.scaleConstraint( ctrls, i )\n    number = number + 1\n    controls.append(ctrlGrp)" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "from maya import cmds\nselCurve = cmds.ls( sl = True )\n\nif selCur..." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "from maya import cmds\nselCurve = cmds.ls( sl = True )\n\nif selCur..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "zGeoGroup" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from maya import cmds\nselCurve = cmds.ls( sl = True )\n\nfor i in selCurve:\n    grp = cmds.group( em = True, name = i.split(\"_geo\")[0] + \"_grp\" )\n    cmds.parent( i, grp )" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "from maya import cmds\nselCurve = cmds.ls( sl = True )\n\nfor i in ..." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "from maya import cmds\nselCurve = cmds.ls( sl = True )\n\nfor i in ..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "zCtrlGroup" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from maya import cmds\nselCurve = cmds.ls( sl = True )\n\nfor i in selCurve:\n    grp = cmds.group( em = True, name = i.split(\"_ctrl\")[0] + \"_grp\" )\n    cmds.parent( i, grp )" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "copy Skin" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "import maya.cmds as cmds\n\nskins = cmds.ls(sl=1)\ninf = cmds.skinC..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "zCopySkin" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import maya.cmds as cmds\n\nskins = cmds.ls(sl=1)\ninf = cmds.skinCluster(skins[0],q=1,inf=1)\n\nfor obj in skins[1:]:\n\tcmds.skinCluster( inf, obj, tsb=1,ibp=1)\n\tcmds.select(skins[0])\n\tcmds.select(obj,tgl=1)\n\tprint cmds.ls(sl=1)\n\tcmds.copySkinWeights(nm=1,sa=\"closestPoint\", ia=\"closestJoint\")\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Select an object(s)" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Center Pivot" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "CP" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "menuIconModify.png" 
+        -image1 "menuIconModify.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "CenterPivot" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Match the transforms of selected objects to the last-selected object." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Match All Transforms" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "MAT" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "menuIconModify.png" 
+        -image1 "menuIconModify.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "MatchTransform" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Select an object(s)" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Freeze Transformations" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "FT" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "menuIconModify.png" 
+        -image1 "menuIconModify.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "FreezeTransformations" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Delete construction history on the selected object(s)" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "History" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Hist" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "menuIconEdit.png" 
+        -image1 "menuIconEdit.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "DeleteHistory" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "import maya.cmds as cmds\nimport dpAutoRigSystem\nimport dpAutoRigSystem.dpAutoRig as autoRig\nreload(autoRig)\nautoRigUI = autoRig.DP_AutoRig_UI()" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "import maya.cmds as cmds\nimport dpAutoRigSystem\nimport dpAutoRig..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "C:/Users/WORKSTATION-00/Documents/maya/scripts/dpAutoRigSystem/Icons/dp_AR.png" 
+        -image1 "C:/Users/WORKSTATION-00/Documents/maya/scripts/dpAutoRigSystem/Icons/dp_AR.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import maya.cmds as cmds\nimport dpAutoRigSystem\nimport dpAutoRigSystem.dpAutoRig as autoRig\nreload(autoRig)\nautoRigUI = autoRig.DP_AutoRig_UI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "# fix // Error: <function selCom at 0x7f29c5c04aa0>; //\nfrom maya import cmds\nfor _editor in cmds.lsUI(editors=True):\n    if not cmds.outlinerEditor(_editor, query=True, exists=True):\n        continue\n    _sel_cmd = cmds.outlinerEditor(_editor, query=True, selectCommand=True)\n    if not _sel_cmd or not _sel_cmd.startswith('look'):\n        continue\n    cmds.outlinerEditor(_editor, edit=True, selectCommand='')\ncmds.delete(cmds.ls(type=\"script\"))" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "# fix // Error: <function selCom at 0x7f29c5c04aa0>; //\nfrom may..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "CLook" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "# fix // Error: <function selCom at 0x7f29c5c04aa0>; //\nfrom maya import cmds\nfor _editor in cmds.lsUI(editors=True):\n    if not cmds.outlinerEditor(_editor, query=True, exists=True):\n        continue\n    _sel_cmd = cmds.outlinerEditor(_editor, query=True, selectCommand=True)\n    if not _sel_cmd or not _sel_cmd.startswith('look'):\n        continue\n    cmds.outlinerEditor(_editor, edit=True, selectCommand='')\ncmds.delete(cmds.ls(type=\"script\"))" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "from maya import cmds\n\nlistGeo = []\n\nmeshSelect = cmds.ls( sl = ..." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "from maya import cmds\n\nlistGeo = []\n\nmeshSelect = cmds.ls( sl = ..." 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Blinn" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from maya import cmds\n\nlistGeo = []\n\nmeshSelect = cmds.ls( sl = True, sn = True )\n\nfor name in meshSelect:\n    newName = name.split(\"Shape\")[0]\n    listGeo.append(newName)\n    \nprint listGeo\n\ndef applyMaterial(node):\n    if cmds.objExists(node):\n        shd = cmds.shadingNode('blinn', name=\"%s_mat\" % node.split(\"_geo\")[0], asShader=True)\n        shdSG = cmds.sets(name='%sSG' % shd, empty=True, renderable=True, noSurfaceShader=True)\n        cmds.connectAttr('%s.outColor' % shd, '%s.surfaceShader' % shdSG)\n        cmds.sets(node, e=True, forceElement=shdSG)\n\n\nfor mesh in listGeo:\n    applyMaterial(mesh)" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "SHAKI.MainClassShaKit()" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "SHAKI.MainClassShaKit()" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "ShaderToolKit" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "SHAKI.MainClassShaKit()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Remove unused items" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Optimize Scene Size" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "OSS" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "menuIconFile.png" 
+        -image1 "menuIconFile.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "OptimizeScene" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "TX Manager" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "TX Manager" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "TXManagerShelf.png" 
+        -image1 "TXManagerShelf.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import mtoa.ui.arnoldmenu;mtoa.ui.arnoldmenu.arnoldTxManager()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "File Path Editor" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "File Path Editor" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "FPE" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "menuIconWindow.png" 
+        -image1 "menuIconWindow.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "FilePathEditor" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 0
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "ngSkinTools UI" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "ngst" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "ngSkinToolsShelfIcon.png" 
+        -image1 "ngSkinToolsShelfIcon.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from ngSkinTools.ui.mainwindow import MainWindow\nMainWindow.open()" 
+        -sourceType "python" 
+        -commandRepeatable 0
+        -flat 1
+    ;
+
+} 
