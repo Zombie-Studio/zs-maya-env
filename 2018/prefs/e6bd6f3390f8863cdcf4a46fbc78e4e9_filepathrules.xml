@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rules version="1.0">
-	<default colorSpace="Utility - Raw"/>
-	<FilePathRule name="hdri" extension="hdr" pattern="*" colorSpace="Utility - Linear - sRGB" />
-	<FilePathRule name="basecolor_substance" extension="*" pattern="*BaseColor*" colorSpace="Output - Rec.709" />
-	<FilePathRule name="Color" extension="*" pattern="*Color*" colorSpace="Output - Rec.709" />
-	<FilePathRule name="exr" extension="exr" pattern="*" colorSpace="Utility - Raw" />
-</rules>
