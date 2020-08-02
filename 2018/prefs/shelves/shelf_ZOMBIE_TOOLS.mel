@@ -2,27 +2,29 @@ global proc shelf_ZOMBIE_TOOLS () {
     global string $gBuffStr;
     global string $gBuffStr0;
     global string $gBuffStr1;
-	
-	
-	shelfButton
+
+
+    shelfButton
+        -enableCommandRepeat 1
         -enable 1
-        -width 32
-        -height 32
+        -width 35
+        -height 35
         -manage 1
         -visible 1
         -preventOverride 0
         -annotation "SCREEN SHOT" 
         -enableBackground 0
         -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 R
+        -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "PRINT" 
+        -label "SCREEN SHOT" 
         -labelOffset 0
         -rotation 0
         -flipX 0
         -flipY 0
         -useAlpha 1
         -font "plainLabelFont" 
+        -imageOverlayLabel "zPropRig" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "snapshot.png" 
@@ -30,9 +32,10 @@ global proc shelf_ZOMBIE_TOOLS () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import maya.OpenMayaUI as OpenMayaUI\nimport maya.OpenMaya as OpenMaya\nimport random\n\nview = OpenMayaUI.M3dView.active3dView()\nimg = OpenMaya.MImage()\nview.readColorBuffer(img, 1)\nimg.writeToFile(\"G:/views/{0}.jpg\".format(int(random.random() * 10000)), \"jpg\")" 
+        -command "import maya.OpenMayaUI as OpenMayaUI\nimport maya.OpenMaya as OpenMaya\nimport random\nimport os\n\npath = cmds.workspace(q=True, rootDirectory=True)\npath = \"{}screenshots/\".format(path)\n\nview = OpenMayaUI.M3dView.active3dView()\nimg = OpenMaya.MImage()\nview.readColorBuffer(img, 1)\nimg.writeToFile(\"{}{}.jpg\".format(path, int(random.random() * 10000)), \"jpg\")" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
     ;
+
 } 
