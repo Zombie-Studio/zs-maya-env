@@ -36,5 +36,37 @@ global proc shelf_ZOMBIE_TOOLS () {
         -commandRepeatable 1
         -flat 1
     ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "CLEANUP FAST RUN MAYA\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "#CLEANUP FAST RUN MAYA\n" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "C:/Users/ZOMBIEZILLA/AppData/Roaming/ZombieEnv/2018/prefs/icons/fast.png" 
+        -image1 "C:/Users/ZOMBIEZILLA/AppData/Roaming/ZombieEnv/2018/prefs/icons/fast.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "#CLEANUP FAST RUN MAYA\nimport maya.cmds as cmds\nimport maya.mel as mel\nimport os\nimport glob\nimport shutil\nimport time\n\npath = os.environ[\"APPDATA\"]\npath = \"{}\\\\zombieEnv\".format(path)\nshelf_path = \"{}\\\\2018\\prefs\\shelves\\\\\".format(path)\nif os.path.exists(path):   \n    for i in os.listdir(shelf_path):\n        if not \"ZOMBIE\"in i:\n            try:\n                cmds.deleteUI(\"{}\".format(i.replace(\"shelf_\",\"\").replace(\".mel\", \"\")))\n                print(\"{}\".format(i.replace(\"shelf_\",\"\").replace(\".mel\", \"\")))\n                time.sleep(1)\n            except:\n                pass\n\nfor p in [\"Substance\",\"bifmeshio\",\"bifrostshellnode\", \"bifrostvisplugin\"]:\n    if cmds.pluginInfo(p, query = True, loaded = True):        \n        cmds.unloadPlugin(p, force=True)\n        cmds.pluginInfo(p, edit=True, autoload=False)\n        time.sleep(2)\n\ncmds.optionVar(stringValue=(\"colorManagementPolicyFileName\",\"R:/Zombie Dropbox/Zombie Studio (freelance)/INHOUSE/OCIO/maya/ACES.xml\"))\n\ncmds.savePrefs()\ncmds.quit(force=True)" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
 
 } 
