@@ -1,4 +1,4 @@
-global proc shelf_Arnold () {
+global proc shelf_Rendering () {
     global string $gBuffStr;
     global string $gBuffStr0;
     global string $gBuffStr1;
@@ -12,12 +12,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Create Area Light" 
+        -annotation "Ambient Light: Create an ambient light on the grid or live surface" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Create Area Light" 
+        -label "Ambient Light" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -26,13 +26,14 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "AreaLightShelf.png" 
-        -image1 "AreaLightShelf.png" 
+        -image "ambientlight.png" 
+        -image1 "ambientlight.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.utils as mutils;mutils.createLocator(\"aiAreaLight\", asLight=True)" 
-        -sourceType "python" 
+        -command "CreateAmbientLight" 
+        -sourceType "mel" 
+        -doubleClickCommand "CreateAmbientLightOptions" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -44,12 +45,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Create Mesh Light" 
+        -annotation "Directional Light: Create a directional light on the grid or live surface" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Create Mesh Light" 
+        -label "Directional Light" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -58,13 +59,14 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "MeshLightShelf.png" 
-        -image1 "MeshLightShelf.png" 
+        -image "directionallight.png" 
+        -image1 "directionallight.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.utils as mutils; mutils.createMeshLight()" 
-        -sourceType "python" 
+        -command "CreateDirectionalLight" 
+        -sourceType "mel" 
+        -doubleClickCommand "CreateDirectionalLightOptions" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -76,12 +78,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Create Photometric Light" 
+        -annotation "Point Light: Create a point light on the grid or live surface" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Create Photometric Light" 
+        -label "Point Light" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -90,13 +92,14 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "PhotometricLightShelf.png" 
-        -image1 "PhotometricLightShelf.png" 
+        -image "pointlight.png" 
+        -image1 "pointlight.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.utils as mutils; mutils.createLocator(\"aiPhotometricLight\", asLight=True)" 
-        -sourceType "python" 
+        -command "CreatePointLight" 
+        -sourceType "mel" 
+        -doubleClickCommand "CreatePointLightOptions" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -108,12 +111,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Create SkyDome Light" 
+        -annotation "Spot Light: Create a spot light on the grid or live surface" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Create SkyDome Light" 
+        -label "Spot Light" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -122,13 +125,14 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "SkydomeLightShelf.png" 
-        -image1 "SkydomeLightShelf.png" 
+        -image "spotlight.png" 
+        -image1 "spotlight.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.utils as mutils; mutils.createLocator(\"aiSkyDomeLight\", asLight=True)" 
-        -sourceType "python" 
+        -command "CreateSpotLight" 
+        -sourceType "mel" 
+        -doubleClickCommand "CreateSpotLightOptions" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -140,12 +144,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Create Light Portal" 
+        -annotation "Area Light: Create an area light on the grid or live surface" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Create Light Portal" 
+        -label "Area Light" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -154,13 +158,14 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "LightPortalShelf.png" 
-        -image1 "LightPortalShelf.png" 
+        -image "arealight.png" 
+        -image1 "arealight.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.doCreateLightPortal()" 
-        -sourceType "python" 
+        -command "CreateAreaLight" 
+        -sourceType "mel" 
+        -doubleClickCommand "CreateAreaLightOptions" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -172,12 +177,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Create Physical Sky" 
+        -annotation "Volume Light: Create a volume light on the grid or live surface" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Create Physical Sky" 
+        -label "Volume Light" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -186,58 +191,14 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "PhysicalSkyShelf.png" 
-        -image1 "PhysicalSkyShelf.png" 
+        -image "volumelight.png" 
+        -image1 "volumelight.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.doCreatePhysicalSky()" 
-        -sourceType "python" 
-        -commandRepeatable 1
-        -flat 1
-    ;
-    separator
-        -enable 1
-        -width 12
-        -height 35
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -style "shelf" 
-        -horizontal 0
-    ;
-    shelfButton
-        -enableCommandRepeat 1
-        -enable 1
-        -width 35
-        -height 35
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -annotation "Create StandIn" 
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -align "center" 
-        -label "Create StandIn" 
-        -labelOffset 0
-        -rotation 0
-        -flipX 0
-        -flipY 0
-        -useAlpha 1
-        -font "plainLabelFont" 
-        -overlayLabelColor 0.8 0.8 0.8 
-        -overlayLabelBackColor 0 0 0 0.5 
-        -image "StandinShelf.png" 
-        -image1 "StandinShelf.png" 
-        -style "iconOnly" 
-        -marginWidth 1
-        -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.createStandIn()" 
-        -sourceType "python" 
+        -command "CreateVolumeLight" 
+        -sourceType "mel" 
+        -doubleClickCommand "CreateVolumeLightOptions" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -249,12 +210,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Export StandIn" 
+        -annotation "Create Camera: Create a camera on the grid" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Export StandIn" 
+        -label "Create Camera" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -263,13 +224,14 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "ExportStandinShelf.png" 
-        -image1 "ExportStandinShelf.png" 
+        -image "view.png" 
+        -image1 "view.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.doExportStandIn()" 
-        -sourceType "python" 
+        -command "CreateCameraOnly" 
+        -sourceType "mel" 
+        -doubleClickCommand "CreateCameraOnlyOptions" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -281,12 +243,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Create Curve Collector" 
+        -annotation "Edit Material Attributes: Show shading group Attribute Editor" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Create Curve Collector" 
+        -label "Edit Material Attributes" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -295,13 +257,13 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "CurveCollectorShelf.png" 
-        -image1 "CurveCollectorShelf.png" 
+        -image "materialEditor.png" 
+        -image1 "materialEditor.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.doCreateCurveCollector()" 
-        -sourceType "python" 
+        -command "ShowShadingGroupAttributeEditor" 
+        -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -313,12 +275,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Create Volume" 
+        -annotation "Anisotropic Material: Assign a new anisotropic material to the active objects" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Create Volume" 
+        -label "Anisotropic Material" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -327,58 +289,13 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "VolumeShelf.png" 
-        -image1 "VolumeShelf.png" 
+        -image "render_anisotropic.png" 
+        -image1 "render_anisotropic.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.createVolume()" 
-        -sourceType "python" 
-        -commandRepeatable 1
-        -flat 1
-    ;
-    separator
-        -enable 1
-        -width 12
-        -height 35
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -style "shelf" 
-        -horizontal 0
-    ;
-    shelfButton
-        -enableCommandRepeat 1
-        -enable 1
-        -width 35
-        -height 35
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -annotation "TX Manager" 
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -align "center" 
-        -label "TX Manager" 
-        -labelOffset 0
-        -rotation 0
-        -flipX 0
-        -flipY 0
-        -useAlpha 1
-        -font "plainLabelFont" 
-        -overlayLabelColor 0.8 0.8 0.8 
-        -overlayLabelBackColor 0 0 0 0.5 
-        -image "TXManagerShelf.png" 
-        -image1 "TXManagerShelf.png" 
-        -style "iconOnly" 
-        -marginWidth 1
-        -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.arnoldTxManager()" 
-        -sourceType "python" 
+        -command "createAndAssignShader anisotropic \"\"" 
+        -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -390,12 +307,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Update TX files" 
+        -annotation "Blinn Material: Assign a new Blinn material to the active objects" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Update TX files" 
+        -label "Blinn Material" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -404,13 +321,13 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "UpdateTxShelf.png" 
-        -image1 "UpdateTxShelf.png" 
+        -image "render_blinn.png" 
+        -image1 "render_blinn.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.arnoldUpdateTx()" 
-        -sourceType "python" 
+        -command "createAndAssignShader blinn \"\"" 
+        -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -422,12 +339,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Flush Texture Cache" 
+        -annotation "Lambert Material: Assign a new Lambert material to the active objects" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Flush Texture Cache" 
+        -label "Lambert Material" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -436,58 +353,13 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "FlushTextureShelf.png" 
-        -image1 "FlushTextureShelf.png" 
+        -image "render_lambert.png" 
+        -image1 "render_lambert.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import maya.cmds as cmds; cmds.arnoldFlushCache(textures=True)" 
-        -sourceType "python" 
-        -commandRepeatable 1
-        -flat 1
-    ;
-    separator
-        -enable 1
-        -width 12
-        -height 35
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -style "shelf" 
-        -horizontal 0
-    ;
-    shelfButton
-        -enableCommandRepeat 1
-        -enable 1
-        -width 35
-        -height 35
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -annotation "Bake Selected Geometry" 
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -align "center" 
-        -label "Bake Selected Geometry" 
-        -labelOffset 0
-        -rotation 0
-        -flipX 0
-        -flipY 0
-        -useAlpha 1
-        -font "plainLabelFont" 
-        -overlayLabelColor 0.8 0.8 0.8 
-        -overlayLabelBackColor 0 0 0 0.5 
-        -image "BakeGeometryShelf.png" 
-        -image1 "BakeGeometryShelf.png" 
-        -style "iconOnly" 
-        -marginWidth 1
-        -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.arnoldBakeGeo()" 
-        -sourceType "python" 
+        -command "createAndAssignShader lambert \"\"" 
+        -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -499,12 +371,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Render Selection to Texture" 
+        -annotation "Phong Material: Assign a new Phong material to the active objects" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Render Selection to Texture" 
+        -label "Phong Material" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -513,58 +385,13 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "RenderToTextureShelf.png" 
-        -image1 "RenderToTextureShelf.png" 
+        -image "render_phong.png" 
+        -image1 "render_phong.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.arnoldRenderToTexture()" 
-        -sourceType "python" 
-        -commandRepeatable 1
-        -flat 1
-    ;
-    separator
-        -enable 1
-        -width 12
-        -height 35
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -style "shelf" 
-        -horizontal 0
-    ;
-    shelfButton
-        -enableCommandRepeat 1
-        -enable 1
-        -width 35
-        -height 35
-        -manage 1
-        -visible 1
-        -preventOverride 0
-        -annotation "Arnold RenderView" 
-        -enableBackground 0
-        -backgroundColor 0 0 0 
-        -highlightColor 0.321569 0.521569 0.65098 
-        -align "center" 
-        -label "Arnold RenderView" 
-        -labelOffset 0
-        -rotation 0
-        -flipX 0
-        -flipY 0
-        -useAlpha 1
-        -font "plainLabelFont" 
-        -overlayLabelColor 0.8 0.8 0.8 
-        -overlayLabelBackColor 0 0 0 0.5 
-        -image "RenderViewShelf.png" 
-        -image1 "RenderViewShelf.png" 
-        -style "iconOnly" 
-        -marginWidth 1
-        -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.arnoldOpenMtoARenderView()" 
-        -sourceType "python" 
+        -command "createAndAssignShader phong \"\"" 
+        -sourceType "mel" 
         -commandRepeatable 1
         -flat 1
     ;
@@ -576,12 +403,12 @@ global proc shelf_Arnold () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "Render" 
+        -annotation "Phong E Material: Assign a new Phong E material to the active objects" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "Render" 
+        -label "Phong E Material" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -590,13 +417,368 @@ global proc shelf_Arnold () {
         -font "plainLabelFont" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
-        -image "RenderShelf.png" 
-        -image1 "RenderShelf.png" 
+        -image "render_phongE.png" 
+        -image1 "render_phongE.png" 
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import mtoa.ui.arnoldmenu as arnoldmenu; arnoldmenu.arnoldMtoARenderView()" 
-        -sourceType "python" 
+        -command "createAndAssignShader phongE \"\"" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Layered Material: Assign a new layered material to the active objects" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Layered Material" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "render_layeredShader.png" 
+        -image1 "render_layeredShader.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "createAndAssignShader layeredShader \"\"" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Ramp Material: Assign a new ramp material to the active objects" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Ramp Material" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "render_rampShader.png" 
+        -image1 "render_rampShader.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "createAndAssignShader rampShader \"\"" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Shading Map: Assign a new shading map to the active objects" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Shading Map" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "render_shadingMap.png" 
+        -image1 "render_shadingMap.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "createAndAssignShader shadingMap \"\"" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Surface Material: Assign a new surface material to the active objects" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Surface Material" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "render_surfaceShader.png" 
+        -image1 "render_surfaceShader.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "createAndAssignShader surfaceShader \"\"" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Use Background: Assign a new Use Background material to the active objects" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Use Background" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "render_useBackground.png" 
+        -image1 "render_useBackground.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "createAndAssignShader useBackground \"\"" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Render Diagnostics: Show render diagnostics in the script editor" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Render Diagnostics" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "renderDiagnostics.png" 
+        -image1 "renderDiagnostics.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "RenderDiagnostics" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Batch Render: Export the current scene to a file and render that file in the background" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Batch Render" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "batchRender.png" 
+        -image1 "batchRender.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "BatchRender" 
+        -sourceType "mel" 
+        -doubleClickCommand "BatchRenderOptions" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Cancel Batch Render: Cancel batch render" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Cancel Batch Render" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "abortBatchRender.png" 
+        -image1 "abortBatchRender.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "CancelBatchRender" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Show Batch Render: Display the batch render image" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Show Batch Render" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "showBatchRender.png" 
+        -image1 "showBatchRender.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "ShowBatchRender" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Render Sequence: Render all frames in the current animation sequence" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Render Sequence" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "sequenceRender.png" 
+        -image1 "sequenceRender.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -version "2018" 
+        -command "RenderSequence" 
+        -sourceType "mel" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -enable 1
+        -width 35
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "3D Paint Tool: Paint file textures" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "3D Paint Tool" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "art3dPaint.png" 
+        -image1 "art3dPaint.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "Art3dPaintTool" 
+        -sourceType "mel" 
+        -doubleClickCommand "Art3dPaintToolOptions" 
         -commandRepeatable 1
         -flat 1
     ;
