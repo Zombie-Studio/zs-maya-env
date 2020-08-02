@@ -12,19 +12,19 @@ global proc shelf_ZOMBIE_TOOLS () {
         -manage 1
         -visible 1
         -preventOverride 0
-        -annotation "SCREEN SHOT" 
+        -annotation "SCREENSHOT" 
         -enableBackground 0
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "SCREEN SHOT" 
+        -label "SCREENSHOT" 
         -labelOffset 0
         -rotation 0
         -flipX 0
         -flipY 0
         -useAlpha 1
         -font "plainLabelFont" 
-        -imageOverlayLabel "zPropRig" 
+        -imageOverlayLabel "" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "snapshot.png" 
