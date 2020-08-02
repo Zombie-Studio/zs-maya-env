@@ -24,7 +24,6 @@ global proc shelf_ZOMBIE_TOOLS () {
         -flipY 0
         -useAlpha 1
         -font "plainLabelFont" 
-        -imageOverlayLabel "" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
         -image "snapshot.png" 
@@ -32,7 +31,7 @@ global proc shelf_ZOMBIE_TOOLS () {
         -style "iconOnly" 
         -marginWidth 1
         -marginHeight 1
-        -command "import maya.OpenMayaUI as OpenMayaUI\nimport maya.OpenMaya as OpenMaya\nimport random\nimport os\n\npath = cmds.workspace(q=True, rootDirectory=True)\npath = \"{}screenshots/\".format(path)\n\nview = OpenMayaUI.M3dView.active3dView()\nimg = OpenMaya.MImage()\nview.readColorBuffer(img, 1)\nimg.writeToFile(\"{}{}.jpg\".format(path, int(random.random() * 10000)), \"jpg\")" 
+        -command "import maya.OpenMayaUI as OpenMayaUI\nimport maya.OpenMaya as OpenMaya\nimport random\nimport os\n\npath = cmds.workspace(q=True, rootDirectory=True)\npath = \"{}screenshots/\".format(path)\n\nif not os.path.exists(path):\n\tos.mkdir(path)\n\nview = OpenMayaUI.M3dView.active3dView()\nimg = OpenMaya.MImage()\nview.readColorBuffer(img, 1)\nimg.writeToFile(\"{}{}.jpg\".format(path, int(random.random() * 10000)), \"jpg\")" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
