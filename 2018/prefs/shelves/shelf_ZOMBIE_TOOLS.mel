@@ -6,9 +6,11 @@ global proc shelf_ZOMBIE_TOOLS () {
 
     shelfButton
         -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -38,9 +40,11 @@ global proc shelf_ZOMBIE_TOOLS () {
     ;
     shelfButton
         -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
         -enable 1
         -width 35
-        -height 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -49,7 +53,7 @@ global proc shelf_ZOMBIE_TOOLS () {
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "#CLEANUP FAST RUN MAYA\n" 
+        -label "CLEANUP FAST RUN MAYA\n" 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -64,6 +68,74 @@ global proc shelf_ZOMBIE_TOOLS () {
         -marginWidth 1
         -marginHeight 1
         -command "#CLEANUP FAST RUN MAYA\nimport maya.cmds as cmds\nimport maya.mel as mel\nimport os\nimport glob\nimport shutil\nimport time\n\nimport maya.cmds as cmds\n\nwindow = cmds.window(title=\"CLEANUP MAYA\",maximizeButton=False, minimizeButton=False, sizeable=False, height=60)\ncmds.columnLayout( columnAttach=('both', 25), rowSpacing=8, adjustableColumn=True )\ncmds.text(\"\")\nprogressControl = cmds.progressBar(width=250, maxValue=15)\n\ncmds.showWindow( window )\n\ntotal = 0\npath = os.environ[\"APPDATA\"]\npath = \"{}\\\\zombieEnv\".format(path)\nshelf_path = \"{}\\\\2018\\prefs\\shelves\\\\\".format(path)\nfiles = os.listdir(shelf_path)\nshelfs = []\nfor s in files:\n    shelf = s.replace(\"shelf_\",\"\").replace(\".mel\",\"\")\n    shelfs.append(shelf)\n\nif os.path.exists(path):   \n    for i in files:\n        if not \"ZOMBIE\"in i:\n            try:\n                cmds.deleteUI(\"{}\".format(i.replace(\"shelf_\",\"\").replace(\".mel\", \"\")))\n                print(\"{}\".format(i.replace(\"shelf_\",\"\").replace(\".mel\", \"\")))\n                time.sleep(1)\n                total += 1\n                cmds.progressBar(progressControl, edit=True, step=total)\n            except:\n                pass\n\n\nfor p in [\"Substance\",\"bifmeshio\",\"bifrostshellnode\", \"bifrostvisplugin\"]:\n    if cmds.pluginInfo(p, query = True, loaded = True):        \n        cmds.unloadPlugin(p, force=True)\n        cmds.pluginInfo(p, edit=True, autoload=False)\n        total += 1\n        cmds.progressBar(progressControl, edit=True, step=total)\n        time.sleep(2)\n\n\ncmds.optionVar(stringValue=(\"colorManagementPolicyFileName\",\"R:/Zombie Dropbox/Zombie Studio (freelance)/INHOUSE/OCIO/maya/ACES.xml\"))\ntotal += 1\nprint(total)\ncmds.progressBar(progressControl, edit=True, step=total)\ncmds.savePrefs()\ncmds.deleteUI(window)\ncmds.quit(force=True)" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "REMOVE TURTLE" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "REMOVE TURTLE" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import pymel.core as pm\ndef killTurtle():\n    try:\n        pm.lockNode( 'TurtleDefaultBakeLayer', lock=False )\n        pm.delete('TurtleDefaultBakeLayer')\n    except:\n        pass\n    try:\n        pm.lockNode( 'TurtleBakeLayerManager', lock=False )\n        pm.delete('TurtleBakeLayerManager')\n    except:\n        pass\n    try:\n        pm.lockNode( 'TurtleRenderOptions', lock=False )\n        pm.delete('TurtleRenderOptions')\n    except:\n        pass\n    try:\n        pm.lockNode( 'TurtleUIOptions', lock=False )\n        pm.delete('TurtleUIOptions')\n    except:\n        pass\n    pm.unloadPlugin(\"Turtle.mll\")\nkillTurtle()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "REMOVE UNKNOWN" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "REMOVE UNKNOWN" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "import maya.cmds as cmds\nunknownNodes=cmds.ls(type = \"unknown\")\nfor item in unknownNodes:\n    if cmds.objExists(item):\n        print item\n        cmds.delete(item)" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
