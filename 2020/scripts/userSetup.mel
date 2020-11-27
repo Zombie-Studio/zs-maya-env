@@ -1,5 +1,7 @@
-print "\n##########################\n";
-print " ZOMBIE STUDIO ENVIROMENT \n";
-print "##########################\n";
-whatsNewHighlight -showStartupDialog false;
-whatsNewHighlight -highlightOn false;
+print "\n\n";
+print " ##### ##### ##   ## ##### # #####  \n";
+print "    #  #   # # # # # #   # # #      \n";
+print "   #   #   # #  #  # ####  # ###    \n";
+print "  #    #   # #     # #   # # #      \n";
+print " ##### ##### #     # ##### # #####  \n";
+print "\n\n";
