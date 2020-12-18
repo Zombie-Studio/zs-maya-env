@@ -5,3 +5,10 @@ print "   #   #   # #  #  # ####  # ###    \n";
 print "  #    #   # #     # #   # # #      \n";
 print " ##### ##### #     # ##### # #####  \n";
 print "\n\n";
+
+if( startsWith( `whatIs DeadlineMayaClient`, "Mel procedure found in" ) )
+{ 
+	DeadlineMayaClient(); 
+}else{ 
+	warning( "DeadlineMayaClient either has errors or has not been installed." ); 
+}
