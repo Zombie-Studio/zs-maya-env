@@ -41,14 +41,12 @@ class Suspension(Base.StartClass, Layout.LayoutClass):
         
         cmds.setAttr(self.moduleGrp+".moduleNamespace", self.moduleGrp[:self.moduleGrp.rfind(":")], type='string')
         
-        self.cvALoc, shapeSizeCH = self.ctrls.cvJointLoc(ctrlName=self.guideName+"_JointLocA", r=0.3, d=1, guide=True)
-        self.connectShapeSize(shapeSizeCH)
+        self.cvALoc = self.ctrls.cvJointLoc(ctrlName=self.guideName+"_JointLocA", r=0.3, d=1, guide=True)
         self.jAGuide = cmds.joint(name=self.guideName+"_jAGuide", radius=0.001)
         cmds.setAttr(self.jAGuide+".template", 1)
         cmds.parent(self.jAGuide, self.moduleGrp, relative=True)
         
-        self.cvBLoc, shapeSizeCH = self.ctrls.cvJointLoc(ctrlName=self.guideName+"_JointLocB", r=0.3, d=1, guide=True)
-        self.connectShapeSize(shapeSizeCH)
+        self.cvBLoc = self.ctrls.cvJointLoc(ctrlName=self.guideName+"_JointLocB", r=0.3, d=1, guide=True)
         cmds.parent(self.cvBLoc, self.cvALoc)
         cmds.setAttr(self.cvBLoc+".tz", 3)
         cmds.setAttr(self.cvBLoc+".rotateX", 180)
@@ -59,10 +57,10 @@ class Suspension(Base.StartClass, Layout.LayoutClass):
         
         cmds.parent(self.cvALoc, self.moduleGrp)
         cmds.parent(self.jBGuide, self.jAGuide)
-        cmds.parentConstraint(self.cvALoc, self.jAGuide, maintainOffset=False, name=self.jAGuide+"_ParentConstraint")
-        cmds.parentConstraint(self.cvBLoc, self.jBGuide, maintainOffset=False, name=self.jBGuide+"_ParentConstraint")
-        cmds.scaleConstraint(self.cvALoc, self.jAGuide, maintainOffset=False, name=self.jAGuide+"_ScaleConstraint")
-        cmds.scaleConstraint(self.cvBLoc, self.jBGuide, maintainOffset=False, name=self.jBGuide+"_ScaleConstraint")
+        cmds.parentConstraint(self.cvALoc, self.jAGuide, maintainOffset=False, name=self.jAGuide+"_PaC")
+        cmds.parentConstraint(self.cvBLoc, self.jBGuide, maintainOffset=False, name=self.jBGuide+"_PaC")
+        cmds.scaleConstraint(self.cvALoc, self.jAGuide, maintainOffset=False, name=self.jAGuide+"_ScC")
+        cmds.scaleConstraint(self.cvBLoc, self.jBGuide, maintainOffset=False, name=self.jBGuide+"_ScC")
     
     
     def loadFatherB(self, *args):
@@ -141,6 +139,7 @@ class Suspension(Base.StartClass, Layout.LayoutClass):
                 self.base = side+self.userGuideName+'_Guide_Base'
                 self.cvALoc = side+self.userGuideName+"_Guide_JointLocA"
                 self.cvBLoc = side+self.userGuideName+"_Guide_JointLocB"
+                self.radiusGuide = side+self.userGuideName+"_Guide_Base_RadiusCtrl"
                 self.locatorsGrp = cmds.group(name=side+self.userGuideName+"_Loc_Grp", empty=True)
                 # calculate distance between guide and end:
                 self.dist = self.ctrls.distanceBet(self.cvALoc, self.cvBLoc)[0] * 0.2
@@ -149,7 +148,7 @@ class Suspension(Base.StartClass, Layout.LayoutClass):
                     # create joints:
                     cmds.select(clear=True)
                     jnt = cmds.joint(name=side+self.userGuideName+"_"+letter+"_1_Jnt", scaleCompensate=False)
-                    endJoint = cmds.joint(name=side+self.userGuideName+"_"+letter+"_JEnd", scaleCompensate=False)
+                    endJoint = cmds.joint(name=side+self.userGuideName+"_"+letter+"_JEnd", scaleCompensate=False, radius=0.5)
                     cmds.addAttr(jnt, longName='dpAR_joint', attributeType='float', keyable=False)
                     cmds.setAttr(endJoint+".translateZ", self.dist)
                     # joint labelling:
@@ -164,8 +163,8 @@ class Suspension(Base.StartClass, Layout.LayoutClass):
                     self.ctrls.setLockHide([upLocCtrl], ['rx', 'ry', 'rz', 'sx', 'sy', 'sz', 'v'])
                     # position and orientation of joint and control:
                     cmds.parent(ctrl, upLocCtrl, mainCtrl)
-                    cmds.parentConstraint(ctrl, jnt, maintainOffset=False, name=jnt+"_ParentConstraint")
-                    cmds.scaleConstraint(ctrl, jnt, maintainOffset=False, name=jnt+"_ScaleConstraint")
+                    cmds.parentConstraint(ctrl, jnt, maintainOffset=False, name=jnt+"_PaC")
+                    cmds.scaleConstraint(ctrl, jnt, maintainOffset=False, name=jnt+"_ScC")
                     self.ctrlList.append(ctrl)
                     # zeroOut controls:
                     zeroOutCtrlGrp = utils.zeroOut([mainCtrl, ctrl, upLocCtrl])
@@ -174,12 +173,10 @@ class Suspension(Base.StartClass, Layout.LayoutClass):
                     cmds.setAttr(zeroOutCtrlGrp[2]+".translateX", self.dist)
                     # origined from data:
                     if p == 0:
-                        utils.originedFrom(objName=mainCtrl, attrString=self.base+";"+self.cvALoc)
-                        utils.originedFrom(objName=ctrl, attrString=self.base+";"+self.cvALoc)
+                        utils.originedFrom(objName=mainCtrl, attrString=self.base+";"+self.cvALoc+";"+self.radiusGuide)
                         cmds.delete(cmds.parentConstraint(self.cvALoc, zeroOutCtrlGrp[0], maintainOffset=False))
                     else:
                         utils.originedFrom(objName=mainCtrl, attrString=self.cvBLoc)
-                        utils.originedFrom(objName=ctrl, attrString=self.cvBLoc)
                         cmds.delete(cmds.parentConstraint(self.cvBLoc, zeroOutCtrlGrp[0], maintainOffset=False))
                         # integrating data:
                         self.suspensionBCtrlGrpList.append(zeroOutCtrlGrp[0])
@@ -202,18 +199,18 @@ class Suspension(Base.StartClass, Layout.LayoutClass):
                     locGrp = cmds.group(aimLoc, upLoc, name=side+self.userGuideName+"_"+letter+"_Loc_Grp")
                     cmds.parent(locGrp, self.locatorsGrp, relative=True)
                     cmds.delete(cmds.parentConstraint(ctrl, locGrp, maintainOffset=False))
-                    cmds.parentConstraint(upLocCtrl, upLoc, maintainOffset=False, name=upLoc+"_ParentConstraint")
-                    cmds.parentConstraint(mainCtrl, locGrp, maintainOffset=True, name=locGrp+"_ParentConstraint")
+                    cmds.parentConstraint(upLocCtrl, upLoc, maintainOffset=False, name=upLoc+"_PaC")
+                    cmds.parentConstraint(mainCtrl, locGrp, maintainOffset=True, name=locGrp+"_PaC")
                     cmds.setAttr(locGrp+".visibility", 0)
                     self.aimLocList.append(aimLoc)
                     self.upLocList.append(upLoc)
 
                 # aim constraints:
                 # B to A:
-                aAimConst = cmds.aimConstraint(self.aimLocList[1], self.ctrlZeroList[0], aimVector=(0, 0, 1), upVector=(1, 0, 0), worldUpType="object", worldUpObject=self.upLocList[0], maintainOffset=True, name=self.ctrlZeroList[0]+"_AimConstraint")[0]
+                aAimConst = cmds.aimConstraint(self.aimLocList[1], self.ctrlZeroList[0], aimVector=(0, 0, 1), upVector=(1, 0, 0), worldUpType="object", worldUpObject=self.upLocList[0], maintainOffset=True, name=self.ctrlZeroList[0]+"_AiC")[0]
                 cmds.connectAttr(self.ctrlList[0]+".active", aAimConst+"."+self.aimLocList[1]+"W0", force=True)
                 # A to B:
-                bAimConst = cmds.aimConstraint(self.aimLocList[0], self.ctrlZeroList[1], aimVector=(0, 0, 1), upVector=(1, 0, 0), worldUpType="object", worldUpObject=self.upLocList[1], maintainOffset=True, name=self.ctrlZeroList[0]+"_AimConstraint")[0]
+                bAimConst = cmds.aimConstraint(self.aimLocList[0], self.ctrlZeroList[1], aimVector=(0, 0, 1), upVector=(1, 0, 0), worldUpType="object", worldUpObject=self.upLocList[1], maintainOffset=True, name=self.ctrlZeroList[0]+"_AiC")[0]
                 cmds.connectAttr(self.ctrlList[1]+".active", bAimConst+"."+self.aimLocList[0]+"W0", force=True)
                 
                 # integrating data:

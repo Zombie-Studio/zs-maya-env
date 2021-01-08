@@ -3,54 +3,25 @@
 
 ###################################################################
 #
-#    dpAutoRigSystem Python script
+#    dpAutoRigSystem Free Open Source Python Script for Maya
 #
 #    author:  Danilo Pinheiro
 #
 #    contact: nilouco@gmail.com
-#             nilouco.blogspot.com
+#             https://nilouco.blogspot.com
 #
-#    date:
-#        v 1.0 _ 2010-09-18 - start working based in dpAutoRig.mel v1.3
-#        v 2.0 _ 2011-08-03 - first version created
-#        v 2.0 _ 2011-10-09 - first version released for Maya 2011, 2012
-#        v 2.1 _ 2012-03-27 - Mac version updated, thanks to Roger Santos
-#        v 2.2 _ 2012-06-01 - Maya 2013, fixed: limb stretch calcul, (des)active poleVector, leg poleVector parent,
-#                                               ikFkBlend attr for many instances, control size by guide scale,
-#                                               mirror control shape, module count, dontDelete locators
-#        v 2.3 _ 2012-08-27 - new icons by Leandro Wagner, fixed: thumb, spine scale by James do Carmo
-#		 v 2.4 _ 2013-02-01 - fixed: doNotSkin ribbon nurbsSurface, find masterGrp, orient head from masterCtrl,
-#                                    print messages (, at the end), centered pivot of chestB_Ctrl (spine),
-#                                    clavicle pivot position, correct controls mirror based in dpLimb style,
-#                                    quadruped front legs using ikSpring solver, find environment path,
-#                                    loading decomposeMatrix node in order to create mirror, headFollow
-#                             implemented: new feature for dpLimb with bend ribbons by James do Carmo
-#        v 2.5 _ 2014-06-05 - fixed: name convension for controls "_Ctrl", joint scaleCompensate as False,
-#                                    displayAnnotation option for poleVector controls, head scalable,
-#                                    redefined clavicle/hips control, render_Grp, ikStretch/reverseFoot integration
-#                             implemented: dpLimb extremLocToParent control (working for ik/Fk), global_Ctrl,
-#                                          dpFoot footRoll and sideRoll attributes, footMiddleCtrl translate and scale,
-#                                          Proxy_Grp, FX_Grp, Jaw autoTranslate, StickyLips, EyeLookAt, Finger Ik setup,
-#                                          Add Hand Follow, Target Mirror
-#                             changed: all names to UpperCamelCase (PascalCase)
-#       v 2.6 _ 2015-06-08 - fixed: dpTargetMirror with locked transform, arm stretchale, integrated reverseFootCtrl_Old renaming,
-#                                   R_Leg_IkFkBlendGrpToRevFoot_Grp_ParentConstraint offset without stretch, addBend and forearm,
-#                                   fkLine flip mirror, biped ear, quadruped legs, limb start stretch value
-#                            implemented: findPath to Linux OS on dpUtils, eyeScale, sideLips, ballSpin and ballTurn, limb fkIsolated,
-#                                         ikFkSnap (thanks to Renaud Lessard), head translation, finger ikStretch, limb volume variation,
-#                                         eyeLookAt activation with baseCtrl, limb extra bends, shapeSize
-#                            changed: only one limb corner joint, unlocked fk translation,
-#       v 3.0 _ 2015-09-30 - GitHub OpenSource by Sébastien Bourgoing and Renaud Lessard from Squeeze Studio Animation, thanks!
-#                            All updates will be publish in GitHub:
-#                            https://github.com/nilouco/dpAutoRigSystem
+#    GitHub, Wiki:
+#             https://github.com/nilouco/dpAutoRigSystem
 #
+#    Dev Sheet, Collaborators, Logs:
+#             https://docs.google.com/spreadsheets/d/154HoO-bLApA7CKpIJ1bDwSxRF146Kyo2etmHDUJGdiw
 #
 ###################################################################
 
 
 # current version:
-DPAR_VERSION = "3.09.25"
-DPAR_UPDATELOG = "Improved: Foot roll angle and plant attributes."
+DPAR_VERSION = "3.10.27"
+DPAR_UPDATELOG = "#050 - Recreate sticky lips.\nDeleted old sqStickyLips module.\nAdded a new dpZipper module."
 
 
 
@@ -78,6 +49,7 @@ def dpARLoadingWindow():
     cmds.image('loadingImage', image=(path+"/Icons/dp_loading_0%i.png" %randImage), backgroundColor=(0.8, 0.8, 0.8), parent='dpARLoadLayout')
     cmds.text('versionText', label=loadingString, parent='dpARLoadLayout')
     cmds.showWindow('dpARLoadWin')
+    cmds.window('dpARLoadWin', edit=True, widthHeight=(285, 203))
 
 if not "pymel" in sys.modules:
     dpARLoadingWindow()
@@ -148,6 +120,8 @@ GUIDE_BASE_NAME = "Guide_Base"
 GUIDE_BASE_ATTR = "guideBase"
 MODULE_NAMESPACE_ATTR = "moduleNamespace"
 MODULE_INSTANCE_INFO_ATTR = "moduleInstanceInfo"
+TEMP_GRP = "dpAR_Temp_Grp"
+GUIDEMIRROR_GRP = "dpAR_GuideMirror_Grp"
 INFO_ICON = "dp_info.png"
 DPAR_SITE = "https://nilouco.blogspot.com"
 DPAR_RAWURL = "https://raw.githubusercontent.com/nilouco/dpAutoRigSystem/master/dpAutoRigSystem/dpAutoRig.py"
@@ -174,6 +148,7 @@ class DP_AutoRig_UI:
         self.loadedExtras = False
         self.controlInstanceList = []
         self.degreeOption = 0
+        self.tempGrp = TEMP_GRP
         
         
         try:
@@ -261,7 +236,7 @@ class DP_AutoRig_UI:
             return
         
 
-        # call UI window: Also ensure that when thedock controler X button it it, the window is killed and the dock control too
+        # call UI window: Also ensure that when thedock controler X button is hit, the window is killed and the dock control too
         self.iUIKilledId = cmds.scriptJob(uiDeleted=[self.allUIs["dpAutoRigWin"], self.jobWinClose])
         self.pDockCtrl = cmds.dockControl('dpAutoRigSystem', area="left", content=self.allUIs["dpAutoRigWin"], visibleChangeCommand=self.jobDockVisChange)
 
@@ -409,6 +384,7 @@ class DP_AutoRig_UI:
         self.allUIs["prefixText"] = cmds.text('prefixText', align='left', label=self.langDic[self.langName]['i003_prefix'], parent=self.allUIs["prefixLayout"])
         cmds.setParent(self.allUIs["rigOptionsLayout"])
         self.allUIs["hideJointsCB"] = cmds.checkBox('hideJointsCB', label=self.langDic[self.langName]['i009_hideJointsCB'], align='left', v=0, parent=self.allUIs["rigOptionsLayout"])
+        self.allUIs["hideGuideGrpCB"] = cmds.checkBox('hideGuideGrpCB', label=self.langDic[self.langName]['i183_hideGuideGrp'], align='left', v=1, changeCommand=self.displayGuideGrp, parent=self.allUIs["rigOptionsLayout"])
         self.allUIs["integrateCB"] = cmds.checkBox('integrateCB', label=self.langDic[self.langName]['i010_integrateCB'], align='left', v=1, parent=self.allUIs["rigOptionsLayout"])
         self.allUIs["defaultRenderLayerCB"] = cmds.checkBox('defaultRenderLayerCB', label=self.langDic[self.langName]['i004_defaultRL'], align='left', v=1, parent=self.allUIs["rigOptionsLayout"])
         self.allUIs["colorizeCtrlCB"] = cmds.checkBox('colorizeCtrlCB', label=self.langDic[self.langName]['i065_colorizeCtrl'], align='left', v=1, parent=self.allUIs["rigOptionsLayout"])
@@ -460,9 +436,10 @@ class DP_AutoRig_UI:
         self.allUIs["jntCollection"] = cmds.radioCollection('jntCollection', parent=self.allUIs["colSkinLeftA"])
         allJoints   = cmds.radioButton( label=self.langDic[self.langName]['i022_listAllJnts'], annotation="allJoints", onCommand=self.populateJoints )
         dpARJoints  = cmds.radioButton( label=self.langDic[self.langName]['i023_listdpARJnts'], annotation="dpARJoints", onCommand=self.populateJoints )
-        self.allUIs["jointsDisplay"] = cmds.rowColumnLayout('jointsDisplay', numberOfColumns=2, columnWidth=[(1, 40), (2, 100)], columnAlign=[(1, 'left'), (2, 'left')], columnAttach=[(1, 'left', 0), (2, 'left', 10)], parent=self.allUIs["colSkinLeftA"])
-        self.allUIs["_JntCB"] = cmds.checkBox('_JntCB', label="_Jnt", align='left', value=1, changeCommand=self.populateJoints, parent=self.allUIs["jointsDisplay"])
-        self.allUIs["_JisCB"] = cmds.checkBox('_JisCB', label="_Jis", align='left', value=1, changeCommand=self.populateJoints, parent=self.allUIs["jointsDisplay"])
+        self.allUIs["jointsDisplay"] = cmds.rowColumnLayout('jointsDisplay', numberOfColumns=3, columnWidth=[(1, 40), (2, 50), (3, 60)], columnAlign=[(1, 'left'), (2, 'left'), (3, 'left')], columnAttach=[(1, 'left', 0), (2, 'left', 10), (3, 'left', 10)], parent=self.allUIs["colSkinLeftA"])
+        self.allUIs["_JntCB"] = cmds.checkBox('_JntCB', label="_Jnt", annotation="Skinned Joints", align='left', value=1, changeCommand=self.populateJoints, parent=self.allUIs["jointsDisplay"])
+        self.allUIs["_JisCB"] = cmds.checkBox('_JisCB', label="_Jis", annotation="Indirect Skinning Joints", align='left', value=1, changeCommand=self.populateJoints, parent=self.allUIs["jointsDisplay"])
+        self.allUIs["_JarCB"] = cmds.checkBox('_JarCB', label="_Jar", annotation="Skinned Articulation Joints", align='left', value=1, changeCommand=self.populateJoints, parent=self.allUIs["jointsDisplay"])
         self.allUIs["jointNameTF"] = cmds.textField('jointNameTF', width=30, changeCommand=self.populateJoints, parent=self.allUIs["colSkinLeftA"])
         self.allUIs["jntTextScrollLayout"] = cmds.textScrollList( 'jntTextScrollLayout', width=30, allowMultiSelection=True, selectCommand=self.atualizeSkinFooter, parent=self.allUIs["skinningTabLayout"] )
         cmds.radioCollection( self.allUIs["jntCollection"], edit=True, select=dpARJoints )
@@ -476,7 +453,7 @@ class DP_AutoRig_UI:
         self.allUIs["geoLongName"] = cmds.checkBox('geoLongName', label=self.langDic[self.langName]['i073_displayLongName'], align='left', value=1, changeCommand=self.populateGeoms, parent=self.allUIs["colSkinRightA"])
         self.allUIs["geoNameTF"] = cmds.textField('geoNameTF', width=30, changeCommand=self.populateGeoms, parent=self.allUIs["colSkinRightA"])
         self.allUIs["modelsTextScrollLayout"] = cmds.textScrollList( 'modelsTextScrollLayout', width=30, allowMultiSelection=True, selectCommand=self.atualizeSkinFooter, parent=self.allUIs["skinningTabLayout"] )
-        cmds.radioCollection( self.allUIs["geomCollection"], edit=True, select=allGeoms )
+        cmds.radioCollection( self.allUIs["geomCollection"], edit=True, select=selGeoms )
         cmds.setParent(self.allUIs["skinningTabLayout"])
         
         #footerB - columnLayout:
@@ -597,7 +574,10 @@ class DP_AutoRig_UI:
     
     def jobDockVisChange(self, *args):
         #Force focus
-        cmds.dockControl(self.pDockCtrl, r=True, edit=True) #Force focus on the tool when it's open
+        try:
+            cmds.dockControl(self.pDockCtrl, r=True, edit=True) #Force focus on the tool when it's open
+        except:
+            pass
     
     
     def jobSelectedGuide(self):
@@ -803,18 +783,24 @@ class DP_AutoRig_UI:
             jointList = allJointList
             cmds.checkBox(self.allUIs["_JntCB"], edit=True, enable=False)
             cmds.checkBox(self.allUIs["_JisCB"], edit=True, enable=False)
+            cmds.checkBox(self.allUIs["_JarCB"], edit=True, enable=False)
         elif chooseJnt == "dpARJoints":
             cmds.checkBox(self.allUIs["_JntCB"], edit=True, enable=True)
             cmds.checkBox(self.allUIs["_JisCB"], edit=True, enable=True)
+            cmds.checkBox(self.allUIs["_JarCB"], edit=True, enable=True)
             displayJnt = cmds.checkBox(self.allUIs["_JntCB"], query=True, value=True)
             displayJis = cmds.checkBox(self.allUIs["_JisCB"], query=True, value=True)
+            displayJar = cmds.checkBox(self.allUIs["_JarCB"], query=True, value=True)
             for jointNode in allJointList:
                 if cmds.objExists(jointNode+'.'+BASE_NAME+'joint'):
                     if displayJnt:
-                        if "_Jnt" in jointNode:
+                        if jointNode.endswith("_Jnt"):
                             jointList.append(jointNode)
                     if displayJis:
-                        if "_Jis" in jointNode:
+                        if jointNode.endswith("_Jis"):
+                            jointList.append(jointNode)
+                    if displayJar:
+                        if jointNode.endswith("_Jar"):
                             jointList.append(jointNode)
         
         # sort joints by name filter:
@@ -970,6 +956,19 @@ class DP_AutoRig_UI:
                 self.updateWin(rawResult, 'e008_failCheckUpdate')
     
     
+    def displayGuideGrp(self, value, *args):
+        """ Change display hidden guide groups in the Outliner:
+            dpAR_Temp_Grp
+            dpAR_GuideMirror_Grp
+        """
+        if cmds.objExists(TEMP_GRP):
+            cmds.setAttr(TEMP_GRP+".hiddenInOutliner", value)
+        if cmds.objExists(GUIDEMIRROR_GRP):
+            cmds.setAttr(GUIDEMIRROR_GRP+".hiddenInOutliner", value)
+        mel.eval('source AEdagNodeCommon;')
+        mel.eval('AEdagNodeCommonRefreshOutliners();')
+    
+    
     # Start working with Guide Modules:
     def startGuideModules(self, guideDir, action, layout, checkModuleList=None):
         """ Find and return the modules in the directory 'Modules'.
@@ -1068,6 +1067,7 @@ class DP_AutoRig_UI:
             
             cmds.iconTextButton(i=iconInfo, height=30, width=17, style='iconOnly', command=partial(self.info, guide.TITLE, guide.DESCRIPTION, None, 'center', 305, 250), parent=moduleLayout)
         cmds.setParent('..')
+    
     
     #@utils.profiler
     def initGuide(self, guideModule, guideDir, rigType=Base.RigType.biped, *args):
@@ -1201,6 +1201,8 @@ class DP_AutoRig_UI:
                     else:
                         moduleInst = moduleClass(dpUIinst, self.langDic, self.langName, self.presetDic, self.presetName, module[1], Base.RigType.default)
                 self.moduleInstancesList.append(moduleInst)
+                # reload pinGuide scriptJob:
+                self.ctrls.startPinGuide(module[2])
         # edit the footer A text:
         self.modulesToBeRiggedList = utils.getModulesToBeRigged(self.moduleInstancesList)
         cmds.text(self.allUIs["footerAText"], edit=True, label=str(len(self.modulesToBeRiggedList)) +" "+ self.langDic[self.langName]['i005_footerA'])
@@ -1707,8 +1709,8 @@ class DP_AutoRig_UI:
             self.baseRootJntGrp = pymel.createNode("transform", name=self.prefix+"BaseRoot_Joint_Grp")
             pymel.parent(self.baseRootJnt, self.baseRootJntGrp)
             pymel.parent(self.baseRootJntGrp, self.scalableGrp)
-            pymel.parentConstraint(self.rootCtrl, self.baseRootJntGrp, maintainOffset=True, name=self.baseRootJntGrp+"_ParentConstraint")
-            pymel.scaleConstraint(self.rootCtrl, self.baseRootJntGrp, maintainOffset=True, name=self.baseRootJntGrp+"_ScaleConstraint")
+            pymel.parentConstraint(self.rootCtrl, self.baseRootJntGrp, maintainOffset=True, name=self.baseRootJntGrp+"_PaC")
+            pymel.scaleConstraint(self.rootCtrl, self.baseRootJntGrp, maintainOffset=True, name=self.baseRootJntGrp+"_ScC")
             self.baseRootJntGrp.visibility.set(False)
             self.ctrls.setLockHide([self.baseRootJnt.__melobject__(), self.baseRootJntGrp.__melobject__()], ['tx', 'ty', 'tz', 'rx', 'ry', 'rz', 'sx', 'sy', 'sz', 'v'])
 
@@ -1761,7 +1763,20 @@ class DP_AutoRig_UI:
                 cmds.progressWindow(endProgress=True)
                 dpRAttr.dpCloseReorderAttrUI()
 
-
+    
+    def unPinAllGuides(self, *args):
+        """ Force to un pin all guides.
+            Useful to clean up guides before start the rigAll process.
+        """
+        pConstList = cmds.ls(selection=False, type="parentConstraint")
+        if pConstList:
+            for pConst in pConstList:
+                if "PinGuide" in pConst:
+                    pinnedGuide = cmds.listRelatives(pConst, parent=True, type="transform")[0]
+                    self.ctrls.setLockHide([pinnedGuide], ['tx', 'ty', 'tz', 'rx', 'ry', 'rz', 'sx', 'sy', 'sz', 'v'], l=False)
+                    cmds.delete(pConst)
+    
+    
     def rigAll(self, integrate=None, *args):
         """ Create the RIG based in the Guide Modules in the scene.
             Most important function to automate the proccess.
@@ -1769,6 +1784,7 @@ class DP_AutoRig_UI:
         print('\ndpAutoRigSystem Log: ' + self.langDic[self.langName]['i178_startRigging'] + '...\n'),
         # force refresh in order to avoid calculus error is creating Rig at the same time of guides:
         cmds.refresh()
+        self.jobReloadUI()
         
         # get a list of modules to be rigged and re-declare the riggedModuleDic to store for log in the end:
         self.modulesToBeRiggedList = utils.getModulesToBeRigged(self.moduleInstancesList)
@@ -1791,6 +1807,9 @@ class DP_AutoRig_UI:
                         return
                     else:
                         break
+            
+            # force unPin all Guides:
+            self.unPinAllGuides()
             
             # Starting progress window
             rigProgressAmount = 0
@@ -2016,8 +2035,8 @@ class DP_AutoRig_UI:
                                     cmds.parent(revFootCtrlGrp, ikFkBlendGrpToRevFoot, absolute=True)
                                     cmds.parent(ikHandleGrp, toLimbIkHandleGrp, absolute=True)
                                     #Delete the old constraint (two line before) and recreate them on the extrem joint on the limb
-                                    cmds.parentConstraint(extremJnt, footJnt, maintainOffset=True, name=footJnt+"_ParentConstraint")[0]
-                                    #cmds.scaleConstraint(extremJnt, footJnt, maintainOffset=True, name=footJnt+"_ScaleConstraint")[0]
+                                    cmds.parentConstraint(extremJnt, footJnt, maintainOffset=True, name=footJnt+"_PaC")[0]
+                                    #cmds.scaleConstraint(extremJnt, footJnt, maintainOffset=True, name=footJnt+"_ScC")[0]
                                     if limbTypeName == LEG:
                                         cmds.connectAttr(extremJnt+".scaleX", footJnt+".scaleX", force=True)
                                         cmds.connectAttr(extremJnt+".scaleY", footJnt+".scaleY", force=True)
@@ -2036,7 +2055,7 @@ class DP_AutoRig_UI:
                                     # is fixed and a single master scale constraint doesn't work anymore
                                     if (int(cmds.about(version=True)[:4]) >= 2016):
                                         scalableGrp = self.integratedTaskDic[moduleDic]["scalableGrp"][s]
-                                        cmds.scaleConstraint(self.masterCtrl, scalableGrp, name=scalableGrp+"_ScaleConstraint")
+                                        cmds.scaleConstraint(self.masterCtrl, scalableGrp, name=scalableGrp+"_ScC")
                                     # hide this control shape
                                     cmds.setAttr(revFootCtrlShape+".visibility", 0)
                                     # add float attributes and connect from ikCtrl to revFootCtrl:
@@ -2101,8 +2120,9 @@ class DP_AutoRig_UI:
                                             cmds.connectAttr(ikCtrlList[w]+'.'+limbAttr, ikFkNetworkList[w]+'.footRollAtts['+str(netIndex)+']', force=True)
                                             netIndex = netIndex + 1
 
-                                cmds.setAttr(worldRefShapeList[w]+'.visibility', 0)
-                                cmds.parentConstraint(self.rootCtrl, worldRef, maintainOffset=True)
+                                cmds.delete(worldRefShapeList[w])
+                                worldRef = cmds.rename(worldRef, worldRef.replace("_Ctrl", "_Grp"))
+                                cmds.parentConstraint(self.rootCtrl, worldRef, maintainOffset=True, name=worldRef+"_PaC")
                             
                             # parenting correctly the ikCtrlZero to spineModule:
                             fatherModule   = self.hookDic[moduleDic]['fatherModule']
@@ -2121,7 +2141,7 @@ class DP_AutoRig_UI:
                                 # is fixed and a single master scale constraint doesn't work anymore
                                 if (int(cmds.about(version=True)[:4]) >= 2016):
                                     scalableGrp = self.integratedTaskDic[moduleDic]["scalableGrp"][s]
-                                    cmds.scaleConstraint(self.masterCtrl, scalableGrp, name=scalableGrp+"_ScaleConstraint")
+                                    cmds.scaleConstraint(self.masterCtrl, scalableGrp, name=scalableGrp+"_ScC")
 
                                 if fatherModule == SPINE:
                                     # getting limb data:
@@ -2151,7 +2171,7 @@ class DP_AutoRig_UI:
                                                 if cmds.objectType(tmp) == 'reverse':
                                                     revNode = tmp
                                         fkZeroNode = cmds.listConnections(limbIsolateFkConst + ".constraintRotateZ")[0]
-                                        fkCtrl = fkZeroNode.replace("_Zero_Grp", "")
+                                        fkCtrl = fkZeroNode.replace("_Zero_0_Grp", "")
                                         nodeToConst = utils.zeroOut([fkCtrl])[0]
                                         nodeToConst = cmds.rename(nodeToConst, fkCtrl + "_SpaceSwitch_Grp")
                                         mainCtrl = cmds.listConnections(revNode + ".inputX")[0]
@@ -2164,12 +2184,12 @@ class DP_AutoRig_UI:
                                             cmds.parent(mainNull, mainParent, relative=False)
                                             m4Fk = cmds.xform(fkCtrl, worldSpace=True, matrix=True, query=True)
                                             cmds.xform(mainNull, worldSpace=True, matrix=m4Fk)
-                                        newFkConst = cmds.parentConstraint(targetList[0], mainNull, nodeToConst, skipTranslate=["x", "y", "z"], maintainOffset=True, name=nodeToConst+"_ParentConstraint")[0]
+                                        newFkConst = cmds.parentConstraint(targetList[0], mainNull, nodeToConst, skipTranslate=["x", "y", "z"], maintainOffset=True, name=nodeToConst+"_PaC")[0]
                                         cmds.connectAttr(mainCtrl + "." + self.langDic[self.langName]['c032_follow'], newFkConst + "." + targetList[0]+"W0", force=True)
                                         if (cmds.objExists(revNode)):
                                             cmds.connectAttr(revNode + ".outputX", newFkConst + "." + mainNull+"W1", force=True)
                                         else:
-                                            revNode = cmds.createNode('reverse', name=sideName+fkCtrl+"_FkIsolate_Rev")
+                                            revNode = cmds.createNode('reverse', name=fkCtrl+"_FkIsolate_Rev")
                                             cmds.connectAttr(mainCtrl+'.'+self.langDic[self.langName]['c032_follow'], revNode+".inputX", force=True)
                                             cmds.connectAttr(revNode + ".outputX", newFkConst + "." + mainNull+"W1", force=True)
 
@@ -2190,7 +2210,7 @@ class DP_AutoRig_UI:
                                     else:
                                         # do task actions in order to integrate the limb and spine (ikCtrl):
                                         cmds.parent(ikCtrlZero, self.ctrlsVisGrp, absolute=True)
-                                        cmds.parentConstraint(chestA, ikHandleGrp, mo=1)
+                                        cmds.parentConstraint(chestA, ikHandleGrp, mo=1, name=ikHandleGrp+"_PaC")
                                         #Ensure that the arm will follow the Chest_A Ctrl instead of the world
                                         setupFollowSpine(chestA)
 
@@ -2201,7 +2221,7 @@ class DP_AutoRig_UI:
                                             quadFrontLeg = self.integratedTaskDic[moduleDic]['quadFrontLegList'][s]
                                             ikCtrl       = self.integratedTaskDic[moduleDic]['ikCtrlList'][s]
                                             # if quadruped, create a parent contraint from chestA to front leg:
-                                            quadChestParentConst = cmds.parentConstraint(self.rootCtrl, chestA, quadFrontLeg, maintainOffset=True, name=quadFrontLeg+"_ParentConstraint")[0]
+                                            quadChestParentConst = cmds.parentConstraint(self.rootCtrl, chestA, quadFrontLeg, maintainOffset=True, name=quadFrontLeg+"_PaC")[0]
                                             revNode = cmds.createNode('reverse', name=quadFrontLeg+"_Rev")
                                             cmds.addAttr(ikCtrl, longName="followChestA", attributeType='float', minValue=0, maxValue=1, defaultValue=0, keyable=True)
                                             cmds.connectAttr(ikCtrl+".followChestA", quadChestParentConst+"."+chestA+"W1", force=True)
@@ -2215,7 +2235,7 @@ class DP_AutoRig_UI:
                                 cmds.parent(fixIkSpringSolverGrp, self.scalableGrp, absolute=True)
                                 if (int(cmds.about(version=True)[:4]) >= 2016):
                                     for nFix in fixIkSpringSolverGrp:
-                                        cmds.scaleConstraint(self.masterCtrl, nFix, name=nFix+"_ScaleConstraint")
+                                        cmds.scaleConstraint(self.masterCtrl, nFix, name=nFix+"_ScC")
                             
                         # integrate the volumeVariation and ikFkBlend attributes from Spine module to optionCtrl:
                         if moduleType == SPINE:
@@ -2237,7 +2257,7 @@ class DP_AutoRig_UI:
                                 # is fixed and a single master scale constraint doesn't work anymore
                                 if (int(cmds.about(version=True)[:4]) >= 2016):
                                     clusterGrp = self.integratedTaskDic[moduleDic]["scalableGrp"][s]
-                                    cmds.scaleConstraint(self.masterCtrl, clusterGrp, name=clusterGrp+"_ScaleConstraint")
+                                    cmds.scaleConstraint(self.masterCtrl, clusterGrp, name=clusterGrp+"_ScC")
                                 cmds.addAttr(self.optionCtrl, longName=vvAttr, attributeType="float", defaultValue=1, keyable=True)
                                 cmds.connectAttr(self.optionCtrl+'.'+vvAttr, hipsA+'.'+vvAttr)
                                 cmds.setAttr(hipsA+'.'+vvAttr, keyable=False)
@@ -2265,7 +2285,7 @@ class DP_AutoRig_UI:
                             for s, sideName in enumerate(self.itemMirrorNameList):
                                 # connect the masterCtrl to head group using a orientConstraint:
                                 worldRef = self.integratedTaskDic[moduleDic]['worldRefList'][s]
-                                cmds.parentConstraint(self.rootCtrl, worldRef, maintainOffset=True, name=worldRef+"_ParentConstraint")
+                                cmds.parentConstraint(self.rootCtrl, worldRef, maintainOffset=True, name=worldRef+"_PaC")
                                 if bColorize:
                                     self.ctrls.colorShape(self.integratedTaskDic[moduleDic]['ctrlList'][s], "yellow")
                                     self.ctrls.colorShape(self.integratedTaskDic[moduleDic]['lCtrls'][s], "red")
@@ -2283,13 +2303,13 @@ class DP_AutoRig_UI:
                             if fatherModule == HEAD:
                                 # getting head data:
                                 fatherGuide = self.hookDic[moduleDic]['fatherGuide']
-                                headCtrl  = self.integratedTaskDic[fatherGuide]['headCtrlList'][0]
-                                headParentConst = cmds.parentConstraint(self.rootCtrl, headCtrl, eyeGrp, maintainOffset=True, name=eyeGrp+"_ParentConstraint")[0]
+                                upperJawCtrl  = self.integratedTaskDic[fatherGuide]['upperJawCtrlList'][0]
+                                headParentConst = cmds.parentConstraint(self.rootCtrl, upperJawCtrl, eyeGrp, maintainOffset=True, name=eyeGrp+"_PaC")[0]
                                 eyeRevNode = cmds.createNode('reverse', name=eyeGrp+"_Rev")
                                 cmds.connectAttr(eyeCtrl+'.'+self.langDic[self.langName]['c032_follow'], eyeRevNode+".inputX", force=True)
                                 cmds.connectAttr(eyeRevNode+".outputX", headParentConst+"."+self.rootCtrl+"W0", force=True)
-                                cmds.connectAttr(eyeCtrl+'.'+self.langDic[self.langName]['c032_follow'], headParentConst+"."+headCtrl+"W1", force=True)
-                                cmds.parent(upLocGrp, headCtrl, relative=False)
+                                cmds.connectAttr(eyeCtrl+'.'+self.langDic[self.langName]['c032_follow'], headParentConst+"."+upperJawCtrl+"W1", force=True)
+                                cmds.parent(upLocGrp, upperJawCtrl, relative=False)
                                 cmds.setAttr(upLocGrp+".visibility", 0)
                                 # head drives eyeScaleGrp:
                                 self.itemGuideMirrorAxis     = self.hookDic[moduleDic]['guideMirrorAxis']
@@ -2301,7 +2321,7 @@ class DP_AutoRig_UI:
                                     self.itemMirrorNameList = self.itemGuideMirrorNameList
                                 for s, sideName in enumerate(self.itemMirrorNameList):
                                     eyeScaleGrp = self.integratedTaskDic[moduleDic]['eyeScaleGrp'][s]
-                                    cmds.parentConstraint(headCtrl, eyeScaleGrp, maintainOffset=True)
+                                    cmds.parentConstraint(upperJawCtrl, eyeScaleGrp, maintainOffset=True, name=eyeScaleGrp+"_PaC")
                             # changing iris and pupil color override:
                             self.itemMirrorNameList = [""]
                             # get itemGuideName:
@@ -2334,7 +2354,7 @@ class DP_AutoRig_UI:
                                 Release node MAYA-45759 https://download.autodesk.com/us/support/files/maya_2016/Maya%202016%20Release%20Notes_enu.htm
                                 '''
                                 if (int(cmds.about(version=True)[:4]) >= 2016):
-                                    cmds.scaleConstraint(self.masterCtrl, scalableGrp, name=scalableGrp+"_ScaleConstraint")
+                                    cmds.scaleConstraint(self.masterCtrl, scalableGrp, name=scalableGrp+"_ScC")
 
                                 # correct ikCtrl parent to root ctrl:
                                 cmds.parent(ikCtrlZero, self.ctrlsVisGrp, relative=True)
@@ -2348,7 +2368,7 @@ class DP_AutoRig_UI:
                                     if limbTypeName == ARM:
                                         origFromList = self.integratedTaskDic[fatherGuide]['integrateOrigFromList'][s]
                                         origFrom = origFromList[-1]
-                                        cmds.parentConstraint(origFrom, scalableGrp, maintainOffset=True)
+                                        cmds.parentConstraint(origFrom, scalableGrp, maintainOffset=True, name=scalableGrp+"_PaC")
                 
                         # integrate the Single module with another Single as a father:
                         if moduleType == SINGLE:
@@ -2379,8 +2399,8 @@ class DP_AutoRig_UI:
                                     except:
                                         mainJis = self.integratedTaskDic[fatherGuide]['mainJisList'][0]
                                     # father's mainJis drives child's staticGrp:
-                                    cmds.parentConstraint(mainJis, staticGrp, maintainOffset=True)
-                                    cmds.scaleConstraint(mainJis, staticGrp, maintainOffset=True)
+                                    cmds.parentConstraint(mainJis, staticGrp, maintainOffset=True, name=staticGrp+"_PaC")
+                                    cmds.scaleConstraint(mainJis, staticGrp, maintainOffset=True, name=staticGrp+"_ScC")
                                     
                         # integrate the Wheel module with another Option_Ctrl:
                         if moduleType == WHEEL:
@@ -2450,15 +2470,15 @@ class DP_AutoRig_UI:
                                                     if cmds.objExists(fatherBRiggedNode):
                                                         if len(self.fatherBMirrorNameList) > 1: #means fatherB has mirror
                                                             if s == fB:
-                                                                cmds.parentConstraint(fatherBRiggedNode, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ParentConstraint")
-                                                                cmds.scaleConstraint(fatherBRiggedNode, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ScaleConstraint")
+                                                                cmds.parentConstraint(fatherBRiggedNode, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_PaC")
+                                                                cmds.scaleConstraint(fatherBRiggedNode, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ScC")
                                                         else:
-                                                            cmds.parentConstraint(fatherBRiggedNode, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ParentConstraint")
-                                                            cmds.scaleConstraint(fatherBRiggedNode, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ScaleConstraint")
+                                                            cmds.parentConstraint(fatherBRiggedNode, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_PaC")
+                                                            cmds.scaleConstraint(fatherBRiggedNode, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ScC")
                                     else: # probably we will parent to a control curve already generated and rigged before
                                         if cmds.objExists(loadedFatherB):
-                                            cmds.parentConstraint(loadedFatherB, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ParentConstraint")
-                                            cmds.scaleConstraint(loadedFatherB, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ScaleConstraint")
+                                            cmds.parentConstraint(loadedFatherB, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_PaC")
+                                            cmds.scaleConstraint(loadedFatherB, suspensionBCtrlGrp, maintainOffset=True, name=suspensionBCtrlGrp+"_ScC")
                                 # get father module:
                                 fatherModule = self.hookDic[moduleDic]['fatherModule']
                                 if fatherModule == WHEEL:
@@ -2467,8 +2487,8 @@ class DP_AutoRig_UI:
                                     # parent suspension control group to wheel Main_Ctrl
                                     suspensionHookCtrlGrp = self.integratedTaskDic[moduleDic]['ctrlHookGrpList'][s]
                                     wheelMainCtrl = self.integratedTaskDic[fatherGuide]['mainCtrlList'][s]
-                                    cmds.parentConstraint(wheelMainCtrl, suspensionHookCtrlGrp, maintainOffset=True, name=suspensionHookCtrlGrp+"_ParentConstraint")
-                                    cmds.scaleConstraint(wheelMainCtrl, suspensionHookCtrlGrp, maintainOffset=True, name=suspensionHookCtrlGrp+"_ScaleConstraint")
+                                    cmds.parentConstraint(wheelMainCtrl, suspensionHookCtrlGrp, maintainOffset=True, name=suspensionHookCtrlGrp+"_PaC")
+                                    cmds.scaleConstraint(wheelMainCtrl, suspensionHookCtrlGrp, maintainOffset=True, name=suspensionHookCtrlGrp+"_ScC")
                 
                 # atualise the number of rigged guides by type
                 for guideType in self.guideModuleList:

@@ -224,7 +224,19 @@ def zeroOut(transformList=[], offset=False):
         transformList = cmds.ls(selection=True)
     if transformList:
         for transform in transformList:
-            zeroGrp = cmds.duplicate(transform, name=transform+'_Zero_Grp')[0]
+            suffix = "_Zero_0_Grp"
+            transformName = transform
+            if transformName.endswith("_Grp"):
+                transformName = extractSuffix(transformName)
+                if "_Zero_" in transformName:
+                    needAddNumber = True
+                    while needAddNumber:
+                        nodeNumber = str(int(transformName[transformName.rfind("_")+1:])+1)
+                        transformName = (transformName[:transformName.rfind("_")+1])+nodeNumber
+                        suffix = "_Grp"
+                        if not cmds.objExists(transformName+suffix):
+                            needAddNumber = False
+            zeroGrp = cmds.duplicate(transform, name=transformName+suffix)[0]
             zeroUserAttrList = cmds.listAttr(zeroGrp, userDefined=True)
             if zeroUserAttrList:
                 for zUserAttr in zeroUserAttrList:
@@ -523,10 +535,16 @@ def setJointLabel(jointName, sideNumber, typeNumber, labelString):
 def extractSuffix(nodeName):
     """ Remove suffix from a node name and return the base name.
     """
-    endSuffixList = ["_Mesh", "_mesh", "_MESH", "_msh", "_MSH", "_Geo", "_geo", "_GEO", "_Tgt", "_tgt", "_TGT", "_Ctrl", "_ctrl", "_CTRL", "_Grp", "_grp", "_GRP"]
+    endSuffixList = ["_Mesh", "_Msh", "_Geo", "_Ges", "_Tgt", "_Ctrl", "_Grp", "_Crv"]
     for endSuffix in endSuffixList:
         if nodeName.endswith(endSuffix):
             baseName = nodeName[:nodeName.rfind(endSuffix)]
+            return baseName
+        if nodeName.endswith(endSuffix.lower()):
+            baseName = nodeName[:nodeName.rfind(endSuffix.lower())]
+            return baseName
+        if nodeName.endswith(endSuffix.upper()):
+            baseName = nodeName[:nodeName.rfind(endSuffix.upper())]
             return baseName
     return nodeName
 
@@ -683,6 +701,64 @@ def validateName(nodeName, suffix=None, *args):
             nodeName = nodeName+"_"+suffix
     return nodeName
 
+
+def articulationJoint(fatherNode, brotherNode, corrNumber=0, dist=1, jarRadius=1.5, *args):
+    """ Create a simple joint to help skinning with a half rotation value.
+        Receives the number of corrective joints to be created. Zero by default.
+        Returns the created joint list.
+    """
+    jointList = []
+    if fatherNode and brotherNode:
+        if cmds.objExists(fatherNode) and cmds.objExists(brotherNode):
+            jarName = brotherNode[:brotherNode.rfind("_")]+"_Jar"
+            cmds.select(clear=True)
+            jar = cmds.joint(name=jarName, scaleCompensate=False, radius=jarRadius)
+            cmds.addAttr(jar, longName='dpAR_joint', attributeType='float', keyable=False)
+            jointList.append(jar)
+            for i in range(0, corrNumber):
+                jcr = cmds.joint(name=brotherNode[:brotherNode.rfind("_")+1]+str(i)+"_Jcr")
+                cmds.setAttr(jcr+".translateX", ((i+1)*dist))
+                cmds.addAttr(jcr, longName='dpAR_joint', attributeType='float', keyable=False)
+                cmds.select(jar)
+                jointList.append(jcr)
+            cmds.delete(cmds.parentConstraint(brotherNode, jar, maintainOffset=0))
+            cmds.makeIdentity(jar, apply=True)
+            cmds.setAttr(jar+".segmentScaleCompensate", 0)
+            cmds.parent(jar, fatherNode)
+            cmds.pointConstraint(brotherNode, jar, maintainOffset=True, name=jarName+"_PoC")[0]
+            oc = cmds.orientConstraint(fatherNode, brotherNode, jar, maintainOffset=True, name=jarName+"_OrC")[0]
+            cmds.setAttr(oc+".interpType", 2) #Shortest
+            return jointList
+
+
+def getNodeByMessage(grpAttrName, *args):
+    """ Get connected node by All_Grp message attribute.
+        Return the found node name or False if it not found.
+    """
+    result = False
+    allTransformList = cmds.ls(selection=False, type="transform")
+    if allTransformList:
+        for transform in allTransformList:
+            if cmds.objExists(transform+".masterGrp"):
+                # found All_Grp
+                if cmds.objExists(transform+"."+grpAttrName):
+                    foundNodeList = cmds.listConnections(transform+"."+grpAttrName, source=True, destination=False)
+                    if foundNodeList:
+                        result = foundNodeList[0]
+                        break
+    return result
+
+
+def attachToMotionPath(nodeName, curveName, mopName, uValue):
+    """ Simple function to attach a node in a motion path curve.
+        Sets the u position based to given uValue.
+        Returns the created motion path node.
+    """
+    moPath = cmds.pathAnimation(nodeName, curve=curveName, fractionMode=True, name=mopName)
+    cmds.delete(cmds.listConnections(moPath+".u", source=True, destination=False)[0])
+    cmds.setAttr(moPath+".u", uValue)
+    return moPath
+    
 
 #Profiler decorator
 DPAR_PROFILE_MODE = False

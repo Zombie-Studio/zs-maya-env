@@ -134,6 +134,7 @@ class LayoutClass:
                 self.startFrameExists = cmds.objExists(self.moduleGrp+".startFrame")
                 self.steeringExists = cmds.objExists(self.moduleGrp+".steering")
                 self.fatherBExists = cmds.objExists(self.moduleGrp+".fatherB")
+                self.articulationExists = cmds.objExists(self.moduleGrp+".articulation")
                 
                 # UI
                 # edit label of frame layout:
@@ -238,10 +239,12 @@ class LayoutClass:
                     
                 # create eyelid layout:
                 if self.eyelidExists:
-                    self.eyelidLayout = cmds.rowLayout('eyelidLayout', numberOfColumns=4, columnWidth4=(100, 150, 50, 40), columnAlign=[(1, 'right'), (4, 'right')], adjustableColumn=4, columnAttach=[(1, 'both', 2), (2, 'both', 2), (3, 'both', 2), (4, 'both', 10)], parent="selectedColumn" )
+                    self.eyelidLayout = cmds.rowLayout('eyelidLayout', numberOfColumns=5, columnWidth5=(100, 75, 75, 50, 40), columnAlign=[(1, 'right'), (5, 'right')], adjustableColumn=5, columnAttach=[(1, 'both', 2), (2, 'both', 2), (3, 'both', 2), (4, 'both', 2), (5, 'both', 10)], parent="selectedColumn" )
                     cmds.text(" ", parent=self.eyelidLayout)
                     eyelidValue = cmds.getAttr(self.moduleGrp+".eyelid")
                     self.eyelidCB = cmds.checkBox(label=self.langDic[self.langName]['i079_eyelid'], value=eyelidValue, changeCommand=self.changeEyelid, parent=self.eyelidLayout)
+                    specValue = cmds.getAttr(self.moduleGrp+".specular")
+                    self.specCB = cmds.checkBox(label=self.langDic[self.langName]['i184_specular'], value=specValue, changeCommand=self.changeSpecular, parent=self.eyelidLayout)
                     irisValue = cmds.getAttr(self.moduleGrp+".iris")
                     self.irisCB = cmds.checkBox(label=self.langDic[self.langName]['i080_iris'], value=irisValue, changeCommand=self.changeIris, parent=self.eyelidLayout)
                     pupilValue = cmds.getAttr(self.moduleGrp+".pupil")
@@ -302,6 +305,13 @@ class LayoutClass:
                     else:
                         cmds.optionMenu(self.degreeMenu, edit=True, value='3 - Cubic')
                         
+                # create articulation joint layout:
+                if self.articulationExists:
+                    self.articLayout = cmds.rowLayout('articLayout', numberOfColumns=4, columnWidth4=(100, 50, 80, 70), columnAlign=[(1, 'right'), (4, 'right')], adjustableColumn=4, columnAttach=[(1, 'both', 2), (2, 'both', 2), (3, 'both', 2), (4, 'both', 10)], parent="selectedColumn" )
+                    cmds.text(self.langDic[self.langName]['m173_articulation'], parent=self.articLayout)
+                    articValue = cmds.getAttr(self.moduleGrp+".articulation")
+                    self.articCB = cmds.checkBox(label="", value=articValue, changeCommand=self.changeArticulation, parent=self.articLayout)
+                
             except:
                 pass
     
@@ -390,7 +400,8 @@ class LayoutClass:
                 self.fatherFlipExists = cmds.objExists(mirroredGuideFather+".flip")
                 if self.fatherFlipExists:
                     fatherFlip = cmds.getAttr(mirroredGuideFather+".flip")
-                    cmds.setAttr(self.moduleGrp+".flip", fatherFlip)
+                    if cmds.objExists(self.moduleGrp+".flip"):
+                        cmds.setAttr(self.moduleGrp+".flip", fatherFlip)
                 # returns a string 'stopIt' if there is mirrored father guide:
                 return "stopIt"
     
@@ -430,8 +441,14 @@ class LayoutClass:
         # verify integrity of the guideModule:
         if self.verifyGuideModuleIntegrity():
             cmds.setAttr(self.moduleGrp+".mirrorName", item, type='string')
-            
-            
+    
+    
+    def changeArticulation(self, *args):
+        """ Set the attribute value for articulation.
+        """
+        cmds.setAttr(self.moduleGrp+".articulation", cmds.checkBox(self.articCB, query=True, value=True))
+    
+    
     def changeDegree(self, item, *args):
         """ This function receives the degree menu name item and set it as a string in the guide base (moduleGrp).
         """
@@ -460,8 +477,12 @@ class LayoutClass:
         if self.mirrorAxis != 'off':
             if not cmds.objExists(self.guideMirrorGrp):
                 self.guideMirrorGrp = cmds.group(name=self.guideMirrorGrp, empty=True)
-                cmds.setAttr(self.guideMirrorGrp+".template", 1)
                 cmds.addAttr(self.guideMirrorGrp, longName="selectionChanges", defaultValue=0, attributeType="byte")
+                cmds.setAttr(self.guideMirrorGrp+".template", 1)
+                cmds.setAttr(self.guideMirrorGrp+".hiddenInOutliner", 1)
+                for attr in ['tx', 'ty', 'tz', 'rx', 'ry', 'rz', 'sx', 'sy', 'sz', 'v']:
+                    cmds.setAttr(self.guideMirrorGrp+"."+attr, lock=True, keyable=False)
+                        
             if not cmds.objExists(self.previewMirrorGrpName):
                 if guideChildrenList:
                     guideFatherNameList = []
@@ -512,9 +533,13 @@ class LayoutClass:
                                             cmds.parent(newSphereShape, dupRenamed, shape=True, relative=True)
                                             cmds.delete(newSphere[0]) #transform
                                             szMD = cmds.createNode("multiplyDivide", name=dupRenamed+"_MD")
+                                            szClp = cmds.createNode("clamp", name=dupRenamed+"_Clp")
                                             cmds.connectAttr(self.moduleGrp+".shapeSize", szMD+".input1X", force=True)
-                                            cmds.connectAttr(szMD+".outputX", newSphere[1]+".radius", force=True)
+                                            cmds.connectAttr(szMD+".outputX", szClp+".inputR", force=True)
+                                            cmds.connectAttr(szClp+".outputR", newSphere[1]+".radius", force=True)
                                             cmds.setAttr(szMD+".input2X", 0.1)
+                                            cmds.setAttr(szClp+".minR", 0.001)
+                                            cmds.setAttr(szClp+".maxR", 1000)
                                             cmds.rename(newSphere[1], dupRenamed+"_MNS")
                                 elif cmds.objectType(dup) != 'nurbsCurve':
                                     cmds.delete(dup)
@@ -522,7 +547,7 @@ class LayoutClass:
                 # renaming the previewMirrorGuide:
                 self.previewMirrorGuide = cmds.rename(duplicated, self.moduleGrp.replace(":", "_")+'_Mirror')
                 cmds.deleteAttr(self.previewMirrorGuide+".guideBase")
-                cmds.delete(self.previewMirrorGuide+'Shape')
+                cmds.delete(cmds.listRelatives(self.previewMirrorGuide, shapes=True, type="nurbsCurve"))
                 
                 # create a decomposeMatrix node in order to get the worldSpace transformations (like using xform):
                 decomposeMatrix = cmds.createNode('decomposeMatrix', name=self.previewMirrorGuide+"_dm")
