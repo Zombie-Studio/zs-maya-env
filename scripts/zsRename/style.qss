@@ -1,0 +1,25 @@
+*{
+    background-color:#444444;
+}
+
+QPushButton {
+    padding: 7px;
+    border:none;
+    background-color:#222222;
+}
+QPushButton:hover {
+     background-color: #333333;
+}
+QPushButton:hover:!pressed
+{
+  background-color: #000000;
+}
+
+QLabel {
+}
+
+QLineEdit{
+    background-color:#e7e7e7;
+    color:#333333;
+    padding:5px;
+}
