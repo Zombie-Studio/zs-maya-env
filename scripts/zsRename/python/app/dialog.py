@@ -48,15 +48,18 @@ class Dialog:
         self.ui.buttonJnt.clicked.connect(lambda x: self.setType('jnt'))
         self.ui.buttonDrv.clicked.connect(lambda x: self.setType('drv'))
 
+        self.ui.buttonSetType.clicked.connect(self.setTypeAll)
+
     def renameNumber(self):
         name = self.ui.inputRename.text()
-        start = int(self.ui.inputStart.text())
-        padding = int(self.ui.inputPadding.text())
-        name = '{}{}'.format(name, str(start).zfill(padding))
-        selecteds = cmds.ls(selection=True)
-        if selecteds:
-            for sel in selecteds:
-                cmds.rename(sel, name)
+        if name:
+            start = int(self.ui.inputStart.text())
+            padding = int(self.ui.inputPadding.text())
+            name = '{}{}'.format(name, str(start).zfill(padding))
+            selecteds = cmds.ls(selection=True)
+            if selecteds:
+                for sel in selecteds:
+                    cmds.rename(sel, name)
 
     def removeCharacter(self, type):
         selecteds = cmds.ls(selection=True)
@@ -147,3 +150,14 @@ class Dialog:
         mel.eval('searchReplaceNames "{}" "{}" "{}"'.format(search, replace, typeRename))
         self.ui.inputSearch.setText('')
         self.ui.inputReplace.setText('')
+
+    def setTypeAll(self):
+        selecteds = cmds.ls(sl=True)
+        types = {'transform': 'grp', 'mesh': 'geo', 'nurbsCurve': 'ctrl', 'joint': 'jnt'}
+        options = ['grp', 'geo', 'ctrl', 'jnt']
+        if selecteds:
+            for sel in selecteds:
+                type = cmds.ls(sel, st=True, dag=True)[-1:][0]
+                if types[type] not in sel:
+                    name = '{name}_{prefix}'.format(name=sel, prefix=types[type])
+                    cmds.rename(sel, name)
