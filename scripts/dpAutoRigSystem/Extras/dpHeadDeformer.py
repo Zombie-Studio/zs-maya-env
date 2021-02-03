@@ -11,7 +11,7 @@ DESCRIPTION = "m052_headDefDesc"
 ICON = "/Icons/dp_headDeformer.png"
 
 
-DPHD_VERSION = "2.7"
+DPHD_VERSION = "2.3"
 
 
 class HeadDeformer():
@@ -24,22 +24,10 @@ class HeadDeformer():
         self.presetName = presetName
         self.ctrls = dpControls.ControlClass(self.dpUIinst, self.presetDic, self.presetName)
         self.headCtrl = None
-        self.wellDone = True
         # call main function
         if (int(cmds.about(version=True)[:4]) == 2020):
-            callMessage = False
-            installedVersion = cmds.about(installedVersion=True)
-            if not "." in installedVersion:
-                callMessage = True
-            else:
-                updateVersion = int(installedVersion[installedVersion.rfind(".")+1:])
-                if updateVersion < 3:
-                    callMessage = True
-            if callMessage:
-                dialogReturn = cmds.confirmDialog(title="Maya 2020 bug", message=self.langDic[self.langName]["b001_BugMayaHD"], button=[self.langDic[self.langName]["i174_continue"],self.langDic[self.langName]["i132_cancel"]], defaultButton=self.langDic[self.langName]["i174_continue"], cancelButton=self.langDic[self.langName]["i132_cancel"], dismissString=self.langDic[self.langName]["i132_cancel"])
-                if dialogReturn == self.langDic[self.langName]["i174_continue"]:
-                    self.dpHeadDeformer(self)
-            else:
+            dialogReturn = cmds.confirmDialog(title="Maya 2020 bug", message=self.langDic[self.langName]["b001_BugMayaHD"], button=[self.langDic[self.langName]["i174_continue"],self.langDic[self.langName]["i132_cancel"]], defaultButton=self.langDic[self.langName]["i174_continue"], cancelButton=self.langDic[self.langName]["i132_cancel"], dismissString=self.langDic[self.langName]["i132_cancel"])
+            if dialogReturn == self.langDic[self.langName]["i174_continue"]:
                 self.dpHeadDeformer(self)
         else:
             self.dpHeadDeformer(self)
@@ -168,11 +156,11 @@ class HeadDeformer():
                 cmds.connectAttr(calibrateReduceMD+".output"+axis, calibrateMD+".input2"+axis, force=True)
                 cmds.connectAttr(arrowCtrl+".translate"+axis, intensityMD+".input1"+axis, force=True)
                 cmds.connectAttr(calibrateMD+".output"+axis, intensityMD+".input2"+axis, force=True)
-            cmds.connectAttr(intensityMD+".outputX", sideBendDefList[1]+".curvature", force=True)
-            cmds.connectAttr(intensityMD+".outputY", squashDefList[1]+".factor", force=True)
-            cmds.connectAttr(intensityMD+".outputZ", frontBendDefList[1]+".curvature", force=True)
+            cmds.connectAttr(intensityMD+".outputX", sideBendDefList[0]+".curvature", force=True)
+            cmds.connectAttr(intensityMD+".outputY", squashDefList[0]+".factor", force=True)
+            cmds.connectAttr(intensityMD+".outputZ", frontBendDefList[0]+".curvature", force=True)
             cmds.connectAttr(arrowCtrl+".ry", twistMD+".input1Y", force=True)
-            cmds.connectAttr(twistMD+".outputY", twistDefList[1]+".endAngle", force=True)
+            cmds.connectAttr(twistMD+".outputY", twistDefList[0]+".endAngle", force=True)
             # change squash to be more cartoon
             cmds.setDrivenKeyframe(squashDefList[0]+".lowBound", currentDriver=intensityMD+".outputY", driverValue=-0.25*bBoxSize, value=-bBoxSize, inTangentType="auto", outTangentType="auto")
             cmds.setDrivenKeyframe(squashDefList[0]+".lowBound", currentDriver=intensityMD+".outputY", driverValue=0, value=-0.5*bBoxSize, inTangentType="auto", outTangentType="auto")
@@ -187,14 +175,12 @@ class HeadDeformer():
 
             self.ctrls.setLockHide([arrowCtrl], ['rx', 'rz', 'sx', 'sy', 'sz', 'v'])
             
-            # create symmetry setup
+            # create symetry setup
             centerClusterList = cmds.cluster(latticeDefList[1]+".pt[0:5][2:3][0:5]", relative=True, name=centerSymmetryName+"_Cls") #[Cluster, Handle]
             topClusterList = cmds.cluster(latticeDefList[1]+".pt[0:5][2:5][0:5]", relative=True, name=topSymmetryName+"_Cls")
             clustersZeroList = utils.zeroOut([centerClusterList[1], topClusterList[1]])
             cmds.delete(cmds.parentConstraint(centerClusterList[1], clustersZeroList[1]))
             clusterGrp = cmds.group(clustersZeroList, name=headDeformerName+"_"+self.langDic[self.langName]["c101_symmetry"]+"_Grp")
-            # arrange lattice deform points percent
-            cmds.percent(topClusterList[0], [latticeDefList[1]+".pt[0:5][2][0]", latticeDefList[1]+".pt[0:5][2][1]", latticeDefList[1]+".pt[0:5][2][2]", latticeDefList[1]+".pt[0:5][2][3]", latticeDefList[1]+".pt[0:5][2][4]", latticeDefList[1]+".pt[0:5][2][5]"], value=0.5)
             # symmetry controls
             centerSymmetryCtrl = self.ctrls.cvControl("id_068_Symmetry", centerSymmetryName+"_Ctrl", bBoxSize, d=0, rot=(-90, 0, 90))
             topSymmetryCtrl = self.ctrls.cvControl("id_068_Symmetry", topSymmetryName+"_Ctrl", bBoxSize, d=0, rot=(0, 90, 0))
@@ -213,19 +199,14 @@ class HeadDeformer():
             offsetGrp = cmds.group(name=headDeformerName+"_Offset_Grp", empty=True)
             dataGrp = cmds.group(name=headDeformerName+"_Data_Grp", empty=True)
             cmds.delete(cmds.parentConstraint(latticeDefList[2], arrowCtrlGrp, maintainOffset=False))
-            arrowCtrlHeight = bBoxMaxY + (bBoxSize*0.5)
-            cmds.setAttr(arrowCtrlGrp+".ty", arrowCtrlHeight)
+            arrowCtrlHeigh = bBoxMaxY + (bBoxSize*0.5)
+            cmds.setAttr(arrowCtrlGrp+".ty", arrowCtrlHeigh)
             cmds.delete(cmds.parentConstraint(latticeDefList[2], offsetGrp, maintainOffset=False))
             cmds.delete(cmds.parentConstraint(latticeDefList[2], symmetryCtrlZeroList[0], maintainOffset=False))
             cmds.delete(cmds.parentConstraint(latticeDefList[2], symmetryCtrlZeroList[1], maintainOffset=False))
-            topSymmetryHeight = cmds.getAttr(symmetryCtrlZeroList[1]+".ty") - (bBoxSize*0.3)
-            cmds.setAttr(symmetryCtrlZeroList[1]+".ty", topSymmetryHeight)
             cmds.parent(symmetryCtrlZeroList, arrowCtrlGrp)
             latticeGrp = cmds.group(name=latticeDefList[1]+"_Grp", empty=True)
             cmds.parent(latticeDefList[1], latticeDefList[2], latticeGrp)
-            # fix topSymmetryCluster pivot
-            topSymmetryCtrlPos = cmds.xform(symmetryCtrlZeroList[1], query=True, rotatePivot=True, worldSpace=True)
-            cmds.xform(topClusterList[1], rotatePivot=(topSymmetryCtrlPos[0], topSymmetryCtrlPos[1], topSymmetryCtrlPos[2]), worldSpace=True)
             
             # try to integrate to Head_Head_Ctrl
             allTransformList = cmds.ls(selection=False, type="transform")
@@ -239,10 +220,9 @@ class HeadDeformer():
                 # setup hierarchy
                 headCtrlPosList = cmds.xform(self.headCtrl, query=True, rotatePivot=True, worldSpace=True)
                 cmds.xform(dataGrp, translation=(headCtrlPosList[0], headCtrlPosList[1], headCtrlPosList[2]), worldSpace=True)
-                cmds.parentConstraint(self.headCtrl, dataGrp, maintainOffset=True, name=dataGrp+"_PaC")
-                cmds.scaleConstraint(self.headCtrl, dataGrp, maintainOffset=True, name=dataGrp+"_ScC")
+                cmds.parentConstraint(self.headCtrl, dataGrp, maintainOffset=True, name=dataGrp+"_ParentConstraint")
+                cmds.scaleConstraint(self.headCtrl, dataGrp, maintainOffset=True, name=dataGrp+"_ScaleConstraint")
                 # influence controls
-                self.upperJawCtrl = None
                 toHeadDefCtrlList = []
                 for item in allTransformList:
                     if cmds.objExists(item+".controlID"):
@@ -250,33 +230,23 @@ class HeadDeformer():
                             toHeadDefCtrlList.append(item)
                         elif cmds.getAttr(item+".controlID") == "id_027_HeadLipCorner":
                             toHeadDefCtrlList.append(item)
-                        elif cmds.getAttr(item+".controlID") == "id_069_HeadUpperJaw":
-                            self.upperJawCtrl = item
-                            upperJawCtrlShapeList = cmds.listRelatives(item, children=True, shapes=True)
-                            if upperJawCtrlShapeList:
-                                for upperJawShape in upperJawCtrlShapeList:
-                                    toHeadDefCtrlList.append(upperJawShape)
-                if self.upperJawCtrl:
-                    upperJawChildrenList = cmds.listRelatives(self.upperJawCtrl, children=True, allDescendents=True, type="transform")
-                    if upperJawChildrenList:
-                        for upperJawChild in upperJawChildrenList:
-                            if cmds.objExists(upperJawChild+".controlID"):
-                                if not cmds.getAttr(upperJawChild+".controlID") == "id_052_FacialFace":
-                                    if not cmds.getAttr(upperJawChild+".controlID") == "id_029_SingleIndSkin":
-                                        if not cmds.getAttr(upperJawChild+".controlID") == "id_054_SingleMain":
-                                            toHeadDefCtrlList.append(upperJawChild)
-                                        else:
-                                            singleMainShapeList = cmds.listRelatives(upperJawChild, children=True, shapes=True)
-                                            if singleMainShapeList:
-                                                for mainShape in singleMainShapeList:
-                                                    toHeadDefCtrlList.append(mainShape)
+                headChildrenList = cmds.listRelatives(self.headCtrl, children=True, allDescendents=True, type="transform")
+                if headChildrenList:
+                    for item in headChildrenList:
+                        if cmds.objExists(item+".controlID"):
+                            if not cmds.getAttr(item+".controlID") == "id_052_FacialFace":
+                                if not cmds.getAttr(item+".controlID") == "id_029_SingleIndSkin":
+                                    if not cmds.getAttr(item+".controlID") == "id_054_SingleMain":
+                                        toHeadDefCtrlList.append(item)
+                                    else:
+                                        singleMainShapeList = cmds.listRelatives(item, children=True, shapes=True)
+                                        if singleMainShapeList:
+                                            for mainShape in singleMainShapeList:
+                                                toHeadDefCtrlList.append(mainShape)
                 if toHeadDefCtrlList:
                     for item in toHeadDefCtrlList:
                         cmds.sets(item, include=headDeformerName+"_FFDSet")
                 cmds.parent(arrowCtrlGrp, self.headCtrl)
-            else:
-                mel.eval("warning" + "\"" + self.langDic[self.langName]["e020_notFoundHeadCtrl"] + "\"" + ";")
-                self.wellDone = False
             
             cmds.parent(squashDefList[1], sideBendDefList[1], frontBendDefList[1], twistDefList[1], offsetGrp)
             cmds.parent(offsetGrp, clusterGrp, latticeGrp, dataGrp)
@@ -296,8 +266,7 @@ class HeadDeformer():
             
             # finish selection the arrow control
             cmds.select(arrowCtrl)
-            if self.wellDone:
-                print self.langDic[self.langName]["i179_addedHeadDef"],
+            print self.langDic[self.langName]["i179_addedHeadDef"],
         
         else:
             mel.eval("warning" + "\"" + self.langDic[self.langName]["i034_notSelHeadDef"] + "\"" + ";")

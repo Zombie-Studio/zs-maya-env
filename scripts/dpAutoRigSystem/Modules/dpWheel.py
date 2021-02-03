@@ -47,7 +47,8 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
         
         cmds.setAttr(self.moduleGrp+".moduleNamespace", self.moduleGrp[:self.moduleGrp.rfind(":")], type='string')
         
-        self.cvCenterLoc = self.ctrls.cvJointLoc(ctrlName=self.guideName+"_CenterLoc", r=0.6, d=1, rot=(90, 0, 90), guide=True)
+        self.cvCenterLoc, shapeSizeCH = self.ctrls.cvJointLoc(ctrlName=self.guideName+"_CenterLoc", r=0.6, d=1, rot=(90, 0, 90), guide=True)
+        self.connectShapeSize(shapeSizeCH)
         self.jGuideCenter = cmds.joint(name=self.guideName+"_JGuideCenter", radius=0.001)
         cmds.setAttr(self.jGuideCenter+".template", 1)
         cmds.parent(self.jGuideCenter, self.moduleGrp, relative=True)
@@ -55,6 +56,7 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
         self.cvFrontLoc = self.ctrls.cvControl("id_059_AimLoc", ctrlName=self.guideName+"_FrontLoc", r=0.3, d=1, rot=(0, 0, 90))
         self.ctrls.colorShape([self.cvFrontLoc], "blue")
         shapeSizeCH = self.ctrls.shapeSizeSetup(self.cvFrontLoc)
+        self.connectShapeSize(shapeSizeCH)
         cmds.parent(self.cvFrontLoc, self.cvCenterLoc)
         cmds.setAttr(self.cvFrontLoc+".tx", 1.3)
         self.jGuideFront = cmds.joint(name=self.guideName+"_JGuideFront", radius=0.001)
@@ -67,7 +69,8 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
         cmds.connectAttr(cvFrontLocPosNode+".output1D", self.cvFrontLoc+".tx")
         self.ctrls.setLockHide([self.cvCenterLoc, self.cvFrontLoc], ['tx', 'ty', 'tz', 'rx', 'ry', 'rz', 'sx', 'sy', 'sz'])
         
-        self.cvInsideLoc = self.ctrls.cvLocator(ctrlName=self.guideName+"_InsideLoc", r=0.2, d=1, guide=True)
+        self.cvInsideLoc, shapeSizeCH = self.ctrls.cvLocator(ctrlName=self.guideName+"_InsideLoc", r=0.2, d=1, guide=True)
+        self.connectShapeSize(shapeSizeCH)
         cmds.parent(self.cvInsideLoc, self.cvCenterLoc)
         cmds.setAttr(self.cvInsideLoc+".tz", 0.3)
         self.jGuideInside = cmds.joint(name=self.guideName+"_JGuideInside", radius=0.001)
@@ -79,7 +82,8 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
         cmds.connectAttr(inverseRadius+".outputX", self.cvInsideLoc+".translateY")
         self.ctrls.setLockHide([self.cvInsideLoc], ['tx', 'ty', 'rx', 'ry', 'rz', 'sx', 'sy', 'sz'])
         
-        self.cvOutsideLoc = self.ctrls.cvLocator(ctrlName=self.guideName+"_OutsideLoc", r=0.2, d=1, guide=True)
+        self.cvOutsideLoc, shapeSizeCH = self.ctrls.cvLocator(ctrlName=self.guideName+"_OutsideLoc", r=0.2, d=1, guide=True)
+        self.connectShapeSize(shapeSizeCH)
         cmds.parent(self.cvOutsideLoc, self.cvCenterLoc)
         cmds.setAttr(self.cvOutsideLoc+".tz", -0.3)
         self.jGuideOutside = cmds.joint(name=self.guideName+"_JGuideOutside", radius=0.001)
@@ -90,10 +94,10 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
         
         cmds.parent(self.cvCenterLoc, self.moduleGrp)
         cmds.parent(self.jGuideFront, self.jGuideInside, self.jGuideOutside, self.jGuideCenter)
-        cmds.parentConstraint(self.cvCenterLoc, self.jGuideCenter, maintainOffset=False, name=self.jGuideCenter+"_PaC")
-        cmds.parentConstraint(self.cvFrontLoc, self.jGuideFront, maintainOffset=False, name=self.jGuideFront+"_PaC")
-        cmds.parentConstraint(self.cvInsideLoc, self.jGuideInside, maintainOffset=False, name=self.cvInsideLoc+"_PaC")
-        cmds.parentConstraint(self.cvOutsideLoc, self.jGuideOutside, maintainOffset=False, name=self.cvOutsideLoc+"_PaC")
+        cmds.parentConstraint(self.cvCenterLoc, self.jGuideCenter, maintainOffset=False, name=self.jGuideCenter+"_ParentConstraint")
+        cmds.parentConstraint(self.cvFrontLoc, self.jGuideFront, maintainOffset=False, name=self.jGuideFront+"_ParentConstraint")
+        cmds.parentConstraint(self.cvInsideLoc, self.jGuideInside, maintainOffset=False, name=self.cvInsideLoc+"_ParentConstraint")
+        cmds.parentConstraint(self.cvOutsideLoc, self.jGuideOutside, maintainOffset=False, name=self.cvOutsideLoc+"_ParentConstraint")
     
     
     def changeStartFrame(self, *args):
@@ -185,7 +189,6 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
                 self.cvFrontLoc = side+self.userGuideName+"_Guide_FrontLoc"
                 self.cvInsideLoc = side+self.userGuideName+"_Guide_InsideLoc"
                 self.cvOutsideLoc = side+self.userGuideName+"_Guide_OutsideLoc"
-                self.radiusGuide = side+self.userGuideName+"_Guide_Base_RadiusCtrl"
                 
                 # create a joint:
                 cmds.select(clear=True)
@@ -195,7 +198,7 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
                 # joint labelling:
                 utils.setJointLabel(self.centerJoint, s+jointLabelAdd, 18, self.userGuideName+"_"+self.langDic[self.langName]['m156_wheel'])
                 # create end joint:
-                self.endJoint = cmds.joint(name=side+self.userGuideName+"_"+self.langDic[self.langName]['m156_wheel']+"_JEnd", radius=0.5)
+                self.endJoint = cmds.joint(name=side+self.userGuideName+"_"+self.langDic[self.langName]['m156_wheel']+"_JEnd")
                 # main joint:
                 cmds.select(clear=True)
                 self.mainJoint = cmds.joint(name=side+self.userGuideName+"_"+self.langDic[self.langName]['c058_main']+"_Jnt", scaleCompensate=False)
@@ -203,7 +206,7 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
                 # joint labelling:
                 utils.setJointLabel(self.mainJoint, s+jointLabelAdd, 18, self.userGuideName+"_"+self.langDic[self.langName]['c058_main'])
                 # create end joint:
-                self.mainEndJoint = cmds.joint(name=side+self.userGuideName+"_"+self.langDic[self.langName]['c058_main']+"_JEnd", radius=0.5)
+                self.mainEndJoint = cmds.joint(name=side+self.userGuideName+"_"+self.langDic[self.langName]['c058_main']+"_JEnd")
                 
                 # create controls:
                 self.wheelCtrl = self.ctrls.cvControl("id_060_WheelCenter", side+self.userGuideName+"_"+self.langDic[self.langName]['m156_wheel']+"_Ctrl", r=self.ctrlRadius, d=self.curveDegree)
@@ -214,9 +217,8 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
                 self.wheelCtrlList.append(self.wheelCtrl)
                 
                 # origined from attributes:
-                utils.originedFrom(objName=self.mainCtrl, attrString=self.base+";"+self.cvCenterLoc+";"+self.cvFrontLoc+";"+self.radiusGuide)
-                utils.originedFrom(objName=self.insideCtrl, attrString=self.cvInsideLoc)
-                utils.originedFrom(objName=self.outsideCtrl, attrString=self.cvOutsideLoc)
+                utils.originedFrom(objName=self.mainCtrl, attrString=self.base+";"+self.cvCenterLoc+";"+self.cvFrontLoc+";"+self.cvInsideLoc+";"+self.cvOutsideLoc)
+                #utils.originedFrom(objName=self.wheelCtrl, attrString=self.cvCenterLoc)
                 
                 # prepare group to receive steering wheel connection:
                 self.toSteeringGrp = cmds.group(self.insideCtrl, name=side+self.userGuideName+"_"+self.langDic[self.langName]['c070_steering'].capitalize()+"_Grp")
@@ -230,7 +232,7 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
                 cmds.delete(cmds.parentConstraint(self.cvFrontLoc, self.endJoint, maintainOffset=False))
                 cmds.delete(cmds.parentConstraint(self.cvCenterLoc, self.wheelCtrl, maintainOffset=False))
                 cmds.delete(cmds.parentConstraint(self.cvCenterLoc, self.mainCtrl, maintainOffset=False))
-                cmds.parentConstraint(self.mainCtrl, self.mainJoint, maintainOffset=False, name=self.mainJoint+"_PaC")
+                cmds.parentConstraint(self.mainCtrl, self.mainJoint, maintainOffset=False)
                 cmds.delete(cmds.parentConstraint(self.cvFrontLoc, self.mainEndJoint, maintainOffset=False))
                 if s == 1 and cmds.getAttr(self.moduleGrp+".flip") == 1:
                     cmds.move(self.ctrlRadius, self.mainCtrl, moveY=True, relative=True, objectSpace=True, worldSpaceDistance=True)
@@ -263,8 +265,8 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
                 self.ctrls.setLockHide([self.wheelCtrl], ['tx', 'ty', 'tz', 'rx', 'ry', 'sx', 'sy', 'sz', 'v'])
                 
                 # grouping:
-                cmds.parentConstraint(self.wheelCtrl, self.centerJoint, maintainOffset=False, name=self.centerJoint+"_PaC")
-                cmds.scaleConstraint(self.wheelCtrl, self.centerJoint, maintainOffset=True, name=self.centerJoint+"_ScC")
+                cmds.parentConstraint(self.wheelCtrl, self.centerJoint, maintainOffset=False, name=self.centerJoint+"_ParentConstraint")
+                cmds.scaleConstraint(self.wheelCtrl, self.centerJoint, maintainOffset=True, name=self.centerJoint+"_ScaleConstraint")
                 cmds.parent(zeroGrpList[1], self.mainCtrl, absolute=True)
                 cmds.parent(zeroGrpList[0], self.outsideCtrl, absolute=True)
                 cmds.parent(zeroGrpList[3], self.insideCtrl, absolute=True)
@@ -315,7 +317,7 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
                 cmds.setAttr(self.oldLoc+".visibility", 0, lock=True)
                 # this wheel auto group locator could be replaced by a decomposeMatrix to get the translation in world space of the Wheel_Auto_Ctrl_Grp instead:
                 self.wheelAutoGrpLoc = cmds.spaceLocator(name=side+self.userGuideName+"_"+self.langDic[self.langName]['m156_wheel']+"_Auto_Loc")[0]
-                cmds.pointConstraint(wheelAutoGrp, self.wheelAutoGrpLoc, maintainOffset=False, name=self.wheelAutoGrpLoc+"_PoC")
+                cmds.pointConstraint(wheelAutoGrp, self.wheelAutoGrpLoc, maintainOffset=False, name=self.wheelAutoGrpLoc+"_PointConstraint")
                 cmds.setAttr(self.wheelAutoGrpLoc+".visibility", 0, lock=True)
                 expString = "if ("+self.wheelCtrl+"."+self.langDic[self.langName]['c047_autoRotate']+" == 1) {"+\
                         "\nif ("+self.wheelCtrl+"."+self.langDic[self.langName]['c093_tryKeepUndo']+" == 1) { undoInfo -stateWithoutFlush 0; };"+\
@@ -403,8 +405,8 @@ class Wheel(Base.StartClass, Layout.LayoutClass):
                     if cmds.objExists(self.loadedGeo):
                         cmds.lattice(latticeList[0], edit=True, geometry=self.loadedGeo)
                 defGrp = cmds.group(latticeList[1], latticeList[2], clustersGrp, name=side+self.userGuideName+"_Deform_Grp")
-                cmds.parentConstraint(self.mainCtrl, defGrp, maintainOffset=True, name=defGrp+"_PaC")
-                cmds.scaleConstraint(self.mainCtrl, defGrp, maintainOffset=True, name=defGrp+"_ScC")
+                cmds.parentConstraint(self.mainCtrl, defGrp, maintainOffset=True, name=defGrp+"_ParentConstraint")
+                cmds.scaleConstraint(self.mainCtrl, defGrp, maintainOffset=True, name=defGrp+"_ScaleConstraint")
                 cmds.parent(defCtrlGrp, self.mainCtrl)
                 cmds.connectAttr(self.wheelCtrl+"."+self.langDic[self.langName]['c021_showControls'], defCtrlGrp+".visibility", force=True)
                 

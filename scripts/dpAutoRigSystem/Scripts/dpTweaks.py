@@ -87,8 +87,8 @@ def Tweaks(dpUIinst):
         userMessage = dpUIinst.langDic[dpUIinst.langName]['i177_chooseMessage']
         
         # use indirect skinning or joints:
-        indSkin     = dpUIinst.langDic[dpUIinst.langName]['i180_indirectSkin']+"\n"+dpUIinst.langDic[dpUIinst.langName]['i185_animation']
-        faceJoint   = dpUIinst.langDic[dpUIinst.langName]['i181_facialJoint']+"\n"+dpUIinst.langDic[dpUIinst.langName]['i186_gaming']
+        indSkin     = dpUIinst.langDic[dpUIinst.langName]['i180_indSkinAnim']
+        faceJoint   = dpUIinst.langDic[dpUIinst.langName]['i181_jointGame']
         faceMessage = dpUIinst.langDic[dpUIinst.langName]['i182_facialMessage']
         
         # getting Simple or Complete module guides to create:
@@ -296,10 +296,10 @@ def Tweaks(dpUIinst):
                         cmds.parent([squintInstance1.moduleGrp, squintInstance2.moduleGrp, squintInstance3.moduleGrp], squintMainInstance.moduleGrp, absolute=True)
                         
                 # try to parent to HEAD guide or control
-                if cmds.objExists("*__*:Guide_Upper"):
-                    cmds.parent(holderMainInstance.moduleGrp, cmds.ls("*__*:Guide_Upper")[0], relative=True)
-                elif cmds.objExists("Head_UpperJaw_Ctrl"):
-                    cmds.parent(holderMainInstance.moduleGrp, "Head_UpperJaw_Ctrl", relative=True)
+                if cmds.objExists("*__*:Guide_Head"):
+                    cmds.parent(holderMainInstance.moduleGrp, cmds.ls("*__*:Guide_Head")[0], relative=True)
+                elif cmds.objExists("Head_Head_Ctrl"):
+                    cmds.parent(holderMainInstance.moduleGrp, "Head_Head_Ctrl", relative=True)
                     
                 
                 # set tweaks guides position

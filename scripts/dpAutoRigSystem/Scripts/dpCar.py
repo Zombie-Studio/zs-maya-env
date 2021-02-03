@@ -582,16 +582,16 @@ def Car(dpUIinst):
                 
                 # woking with ACCELERATOR system:
                 # create fkLine module instance:
-                acceleratorInstance = dpUIinst.initGuide('dpFkLine', guideDir)
-                acceleratorInstance.editUserName(acceleratorName)
+                breakInstance = dpUIinst.initGuide('dpFkLine', guideDir)
+                breakInstance.editUserName(acceleratorName)
                 # editing accelerator base guide informations:
-                cmds.setAttr(acceleratorInstance.moduleGrp+".translateX", 3.2)
-                cmds.setAttr(acceleratorInstance.moduleGrp+".translateY", 7.3)
-                cmds.setAttr(acceleratorInstance.moduleGrp+".translateZ", 13)
-                cmds.setAttr(acceleratorInstance.radiusCtrl+".translateX", 1)
+                cmds.setAttr(breakInstance.moduleGrp+".translateX", 3.2)
+                cmds.setAttr(breakInstance.moduleGrp+".translateY", 7.3)
+                cmds.setAttr(breakInstance.moduleGrp+".translateZ", 13)
+                cmds.setAttr(breakInstance.radiusCtrl+".translateX", 1)
                 
                 # parent accelerator guide to chassis guide:
-                cmds.parent(acceleratorInstance.moduleGrp, chassisInstance.moduleGrp, absolute=True)
+                cmds.parent(breakInstance.moduleGrp, chassisInstance.moduleGrp, absolute=True)
                 
                 # Update progress window
                 progressAmount += 1
