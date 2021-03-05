@@ -1,0 +1,24 @@
+{
+  "databasePath": "{root}/.studiolibrary/database.json",
+  "helpUrl": "https://www.studiolibrary.com",
+  "releasesUrl": "https://github.com/krathjen/studiolibrary/releases",
+  "reportIssueUrl": "https://github.com/krathjen/studiolibrary/issues/new",
+  "tempPath": "{temp}/StudioLibrary/{user}",
+  "metadataPath": "{path}/.studiolibrary/metadata.json",
+  "settingsPath": "{local}/StudioLibrary/LibraryWidget.json",
+  "recursiveSearchDepth": 4,
+  "ignorePaths": [
+    "/."
+  ],
+  "scaleFactorEnabled": true,
+  "checkForUpdateEnabled": true,
+  "itemRegistry": [
+    "studiolibrarymaya.poseitem.PoseItem",
+    "studiolibrarymaya.animitem.AnimItem",
+    "studiolibrarymaya.mirroritem.MirrorItem",
+    "studiolibrarymaya.setsitem.SetsItem",
+    "studiolibrary.folderitem.FolderItem"
+  ],
+  "analyticsEnabled": true,
+  "analyticsId": "UA-50172384-1"
+}
