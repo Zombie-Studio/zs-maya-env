@@ -1,0 +1,57 @@
+modules:
+- name: ASSEMBLY
+  scripts:
+  - {detail: Criacao de Rig basico para props., filename: ZsProp, icon: default.png,
+    id: f9bd43f0-3bd7-11eb-baff-a85e45cdbc33, index: 0, name: ZS PROP}
+  - {detail: Seleciona um vertex para criacao do controle., filename: ZsControl, icon: default.png,
+    id: 6d436f0f-3bd9-11eb-9132-a85e45cdbc33, index: 1, name: ZS CONTROL}
+  - {detail: Seleciona uma geometria ou joint para criar um grupo ZeroOut, filename: ZsGroup,
+    icon: default.png, id: 7b9fd100-3bdb-11eb-827e-a85e45cdbc33, index: 2, name: ZS
+      GROUP}
+  - {detail: Seleciona a geomatria skinada e depois a geometria a ser skinada, filename: ZsCopyskin,
+    icon: copy_skin.png, id: a06e938f-3bdb-11eb-823a-a85e45cdbc33, index: 3, name: ZS
+      COPYSKIN}
+  - {detail: Seleciona a geometria para criar o shader Blinn., filename: ZsBlinn,
+    icon: blinn.png, id: e6332440-3bdb-11eb-a071-a85e45cdbc33, index: 4, name: ZS
+      BLINN}
+  - {detail: Auto Rig - Danilo Pinheiro, filename: DpAutorig, icon: dp_rig.png, id: 10f6b661-3bdc-11eb-8d4b-a85e45cdbc33,
+    index: 5, name: DP AUTORIG}
+  - {detail: '', filename: NgSkinTools, icon: ng_skin.png, id: 28d36a80-3bdc-11eb-a320-a85e45cdbc33,
+    index: 6, name: NG SKIN TOOLS}
+  - {detail: Atualiza todas as referencias da cena, filename: ReloadAllReferences,
+    icon: default.png, id: 8a883cae-54ff-11eb-be72-0ae0afb50181, index: 7, name: RELOAD
+      ALL REFERENCES}
+  - &id001 {detail: Connect World Mesh to InMesh, filename: ConnectWmToIm, icon: default.png,
+    id: null, index: 10, name: CONNECT WM TO IM}
+  - {detail: Limpa as referencias nao associadas a cena para liberar a publicacao
+      no shotgun, filename: ClearReferences, icon: default.png, id: null, index: 9,
+    name: CLEAR REFERENCES}
+  - *id001
+- name: LOOKDEV
+  scripts:
+  - {detail: Seleciona uma geometria para criar o shader do Arnold junto com os nodes
+      de Color Corret e AiRange, filename: ZsCreateAiShader, icon: default.png, id: 7aa994b0-3bdc-11eb-85c4-a85e45cdbc33,
+    index: 0, name: ZS CREATE AI SHADER}
+  - {detail: 'Selecione as luzes da cena para criar os AOVs. Obs.: Para a ferramenta
+      funcionar e preciso colocar o sufixo "_Light" no final. Ex: FILL_Light', filename: ZsRgbaLight,
+    icon: default.png, id: 081d4800-3bdd-11eb-8533-a85e45cdbc33, index: 1, name: ZS
+      RGBA LIGHT}
+  - {detail: Criacao das Aovs para Render., filename: ZsCreateAovs, icon: default.png,
+    id: 8281fbde-3bdd-11eb-a1b2-a85e45cdbc33, index: 2, name: ZS CREATE AOVS}
+  - {detail: Template HDRI., filename: ZsLookdevLightAces, icon: default.png, id: 34987fc0-3bde-11eb-8908-a85e45cdbc33,
+    index: 3, name: ZS LOOKDEV LIGHT ACES}
+  - {detail: Template HDRI, filename: ZsLookdevLightSrgb, icon: default.png, id: 42bec870-3bde-11eb-8f4f-a85e45cdbc33,
+    index: 4, name: ZS LOOKDEV LIGHT SRGB}
+  - {detail: Conversao de ACES para sRGB, filename: ZsConvertColorspace, icon: default.png,
+    id: 76a00870-3bde-11eb-af8c-a85e45cdbc33, index: 5, name: ZS CONVERT COLORSPACE}
+- name: MODELING
+  scripts:
+  - {detail: script base do QuickRename modificado para otimizar renomeacao de objetos
+      e grupos., filename: ZsRename, icon: icon_rename.png, id: db735ac0-7da8-11eb-9f40-0ae0afb50181,
+    index: 0, name: ZS RENAME}
+- name: ANIMATION
+  scripts:
+  - {detail: Biblioteca de pose para animacao, filename: StudioLibrary, icon: studio_library.png,
+    id: null, index: 0, name: STUDIO LIBRARY}
+  - {detail: Plugin de animacao, filename: Animbot, icon: animbot.png, id: e15342c0-7da8-11eb-bc7c-0ae0afb50181,
+    index: 1, name: ANIMBOT}
