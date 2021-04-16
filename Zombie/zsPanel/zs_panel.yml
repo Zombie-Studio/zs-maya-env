@@ -21,12 +21,11 @@ modules:
   - {detail: Atualiza todas as referencias da cena, filename: ReloadAllReferences,
     icon: default.png, id: 8a883cae-54ff-11eb-be72-0ae0afb50181, index: 7, name: RELOAD
       ALL REFERENCES}
-  - &id001 {detail: Connect World Mesh to InMesh, filename: ConnectWmToIm, icon: default.png,
-    id: null, index: 10, name: CONNECT WM TO IM}
+  - {detail: Connect World Mesh to InMesh, filename: ConnectWmToIm, icon: default.png,
+    id: a3565240-9ed8-11eb-a5f5-0ae0afb50181, index: 8, name: CONNECT WM TO IM}
   - {detail: Limpa as referencias nao associadas a cena para liberar a publicacao
-      no shotgun, filename: ClearReferences, icon: default.png, id: null, index: 9,
+      no shotgun, filename: ClearReferences, icon: default.png, id: aa9d926e-9ed8-11eb-b143-0ae0afb50181, index: 9,
     name: CLEAR REFERENCES}
-  - *id001
 - name: LOOKDEV
   scripts:
   - {detail: Seleciona uma geometria para criar o shader do Arnold junto com os nodes
@@ -52,6 +51,6 @@ modules:
 - name: ANIMATION
   scripts:
   - {detail: Biblioteca de pose para animacao, filename: StudioLibrary, icon: studio_library.png,
-    id: null, index: 0, name: STUDIO LIBRARY}
+    id: 9a332621-9ed8-11eb-a72f-0ae0afb50181, index: 0, name: STUDIO LIBRARY}
   - {detail: Plugin de animacao, filename: Animbot, icon: animbot.png, id: e15342c0-7da8-11eb-bc7c-0ae0afb50181,
     index: 1, name: ANIMBOT}

@@ -8,31 +8,35 @@ SCRIPT FOR ZOMBIE STUDIO
 
 import os
 import sys
-import time
 
-path = 'R:/Zombie Dropbox/INHOUSE/zsPanel/animation/studiolibrary/src'
-path = os.path.normpath(path)
+try:
+    zombieEnv = os.path.join(os.environ['APPDATA'], 'zombieEnv')
 
-path_zombie = 'R:/Zombie Dropbox/INHOUSE/zsPanel/animation/studiolibrary'
-path_zombie = os.path.normpath(path_zombie)
+    path = os.path.join(zombieEnv, 'Zombie', 'zsPanel', 'animation', 'studiolibrary', 'src')
+    path = os.path.normpath(path)
 
-if not os.path.exists(path):
-	print(r'The source path "{}" does not exist!'.format(path))
-    
-if path not in sys.path:
-    sys.path.insert(0, path)
-    
-if not os.path.exists(path_zombie):
-	print(r'The source path "{}" does not exist!'.format(path))
-    
-if path_zombie not in sys.path:
-    sys.path.insert(0, path_zombie)
+    path_zombie = os.path.join(zombieEnv, 'Zombie', 'zsPanel', 'animation', 'studiolibrary')
+    path_zombie = os.path.normpath(path_zombie)
 
-import zombie
-reload(zombie)
-zombie.zombieSettings()
+    if not os.path.exists(path):
+        print(r'The source path "{}" does not exist!'.format(path))
 
-import studiolibrary
-reload(studiolibrary)
-studiolibrary.reload()
-studiolibrary.main()
+    if path not in sys.path:
+        sys.path.insert(0, path)
+
+    if not os.path.exists(path_zombie):
+        print(r'The source path "{}" does not exist!'.format(path))
+
+    if path_zombie not in sys.path:
+        sys.path.insert(0, path_zombie)
+
+    import zombie
+    reload(zombie)
+    zombie.zombieSettings()
+
+    import studiolibrary
+    reload(studiolibrary)
+    studiolibrary.reload()
+    studiolibrary.main()
+except Exception as error:
+    print(error)

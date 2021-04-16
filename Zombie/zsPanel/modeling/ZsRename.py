@@ -6,5 +6,9 @@ DATE: Wednesday 27 January 2021 14:18
 SCRIPT FOR ZOMBIE STUDIO
 """
 
-import zsRename
-reload(zsRename)
+try:
+    import zsRename
+
+    reload(zsRename)
+except Exception as error:
+    print(error)

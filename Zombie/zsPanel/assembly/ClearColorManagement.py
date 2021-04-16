@@ -6,13 +6,14 @@ DATE: Wednesday 17 March 2021 07:54
 SCRIPT FOR ZOMBIE STUDIO
 """
 
-from maya import cmds
 import sgtk
+from maya import cmds
 
-app = sgtk.platform.current_engine()
-pipe = app.context.tank.pipeline_configuration.get_name()
 try:
-    if pipe == 'zombieProd':
+    app = sgtk.platform.current_engine()
+    pipe = app.context.tank.pipeline_configuration.get_name()
+
+    if pipe == 'zombieProd' or pipe == 'zombieDev':
         if not cmds.colorManagementPrefs(q=True, cmEnabled=True):
             cmds.colorManagementPrefs(e=True, cmEnabled=True)
             cmds.colorManagementPrefs(e=True, configFilePath="R:/Zombie Dropbox/INHOUSE/OCIO/aces_1.0.3/config.ocio")

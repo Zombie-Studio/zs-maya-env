@@ -6,7 +6,10 @@ DATE: Friday 11 December 2020 15:53
 SCRIPT FOR ZOMBIE STUDIO
 """
 
-from maya import cmds
+try:
+    from maya import cmds
 
-from ngSkinTools.ui.mainwindow import MainWindow
-MainWindow.open()
+    from ngSkinTools.ui.mainwindow import MainWindow
+    MainWindow.open()
+except Exception as error:
+    print(error)
